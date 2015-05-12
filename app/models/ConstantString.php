@@ -1,12 +1,11 @@
 <?php 
-class Project extends Eloquent {
-
+class ConstantString extends Eloquent {
     /**
      * The database table used by the model.
      *
      * @var string
      */
-    protected $table = 'project';
+    protected $table = 'constant_string';
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -15,5 +14,4 @@ class Project extends Eloquent {
      */
     protected $hidden = array();
     protected $guarded = array();
-    public $timestamps = false;
 }

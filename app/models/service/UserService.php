@@ -15,17 +15,24 @@ class UserService {
         return Hash::check($password,$user->password) ? true : false;
     }
 
-    public static function login($username, $password) {
+    public static function login($params) {
+        if (!isset($params['username']) || !isset($params['password'])) {
+            throw new Exception('1005');
+        }
+
+        $username = $params['username'];
+        $password = $params['password'];
+
         $user = User::where('username','=',$username)->first();
 
         //check if the user exists
         if (is_null($user)) {
-            return false;
+            throw new Exception('1006');
         }
 
         //check username and password
         if (!Hash::check($password,$user->password)) {
-            return false;
+            throw new Exception('1007');
         }
 
         //register login time
@@ -34,6 +41,8 @@ class UserService {
         //make user session
         Session::put('username',$user->username);
         Session::put('uid',$user->id);
+        Session::put('uname',$user->name);
+        Session::put('role',$user->role);
         return true;
     }
 
@@ -74,13 +83,8 @@ class UserService {
     }
 
     public static function user_array($params){
-        $user_arr = array(
-            'username' => $params['username'],
-            'password' => Hash::make($params['password']),
-            'name' => $params['name'],
-            'role' => $params['role'],
-        );
 
+        $params['password'] = Hash::make($params['password']);
 
         if ($params['role'] != 5) {
             if (!isset($params['project_id'])) {
@@ -88,9 +92,8 @@ class UserService {
             }
             $project = Project::find($params['project_id']);
             if (!$project) {
-                throw new Exception('1003');
+                throw new Exception('1009');
             }
-            $user_arr['project_id'] = $params['project_id'];
         }
 
         if ($params['role'] == 1) {
@@ -104,8 +107,7 @@ class UserService {
                 throw new Exception('1002');
             }
 
-            $user_arr['tutor_id'] = $params['tutor_id'];
-            $user_arr['tutor_name'] = $tutor->name;
+            $params['tutor_name'] = $tutor->name;
         }
 
         if ($params['role'] == 2) {
@@ -116,11 +118,10 @@ class UserService {
                     throw new Exception('1002');
                 }
 
-                $user_arr['tutor_id'] = $params['tutor_id'];
-                $user_arr['tutor_name'] = $tutor->name;
+                $params['tutor_name'] = $tutor->name;
             }
         }
 
-        return $user_arr;
+        return $params;
     }
 }

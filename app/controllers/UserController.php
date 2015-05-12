@@ -3,7 +3,10 @@ class UserController extends BaseController {
 
     public function loginView() {
         if (UserService::check()) return Redirect::to('/');
-        return View::make('login');
+        $pageVariable = array(
+            
+        );
+        return View::make('login',$pageVariable);
     }
 
     /**
@@ -11,7 +14,21 @@ class UserController extends BaseController {
      * @return json give a message if fail
      */
     public function login() {
-        
+        $res = false;
+        try {
+            $res = UserService::login(Input::all());
+        } catch (Exception $e) {
+            return Util::response_error_msg($e->getMessage());
+        }
+
+        if ($res === true) {
+            return Response::json(array(
+                'status' => 'success',
+                'message' => StatusInfoService::get_description('1008')
+            ));
+        } else {
+            return Util::response_error_msg('503');
+        }
     }
 
     /**
@@ -29,28 +46,16 @@ class UserController extends BaseController {
         try {
             $res = UserService::create(Input::all());   
         } catch(Exception $e) {
-            $status_info = StatusInfo::WhereRaw('status_code = ?',array($e->getMessage()))->first();
-
-            if ($status_info) {
-                return Response::json(array(
-                    'status' => 'fail',
-                    'errorCode' => $e->getMessage(),
-                    'message' => $status_info->description
-                ));
-            }
+            return Util::response_error_msg($e->getMessage());
         }
 
         if ($res === true) {
             return Response::json(array(
                 'status' => 'success',
-                'message' => StatusInfo::WhereRaw('status_code = ?',array('1004'))->first()
+                'message' => StatusInfoService::get_description('1004')
             ));
         } else {
-            return Response::json(array(
-                'status' => 'fail',
-                'errorCode' => '503',
-                'message' => StatusInfo::WhereRaw('status_code = ?',array('503'))->first()
-            ));
+            return Util::response_error_msg('503');
         }
     }
 

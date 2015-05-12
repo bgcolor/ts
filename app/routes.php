@@ -24,3 +24,4 @@ Route::get('/', function() {
 Route::get('login', 'UserController@loginView');
 Route::get('login/check', 'UserController@login');
 Route::get('user/create', 'UserController@create');
+Route::get('project/create', 'ProjectController@create');

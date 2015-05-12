@@ -49,16 +49,27 @@ class Util {
         return preg_match('/[\'\"\ ]/',$str);
     }
 
-    //generate file name with prefix <- 后缀
-    public static function gen_file_name($prefix) {
-        if (!is_string($prefix))  return false;
+    //generate file name with suffix <- 后缀
+    public static function gen_file_name($suffix) {
+        if (!is_string($suffix))  return false;
         $t = microtime(true);
         $micro = sprintf("%06d",($t - floor($t)) * 1000000);
         $d = new DateTime( date('Y-m-d H:i:s.'.$micro,$t) );
         $date_str = $d->format('ymdHisu');
-        return $date_str.$prefix;
+        return $date_str.$suffix;
     }
 
     public static $pagination = 15;
+
+    public static function response_error_msg($msg){
+        $desp = StatusInfoService::get_description($msg);
+        if ($desp) {
+            return Response::json(array(
+                'status' => 'fail',
+                'errorCode' => $msg,
+                'message' => $desp
+            ));
+        }
+    }
 
 }
