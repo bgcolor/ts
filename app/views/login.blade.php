@@ -28,7 +28,7 @@
   <header class="am-topbar admin-header">
     <img class="am-topbar-brand am-padding-vertical-xs" src="assets/i/logo.png" alt="">
     <div class="am-topbar-brand">
-      <strong>物流人才培训系统</strong> <small>管理平台</small>
+      <strong>{{{ $system_title }}}</strong> <small>{{{ $system_sub_title }}}</small>
     </div>
     <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#topbar-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
     <div class="am-collapse am-topbar-collapse" id="topbar-collapse">
@@ -53,14 +53,15 @@
         <fieldset>
           <legend>登录</legend>
           <div class="am-form-group">
-            <input type="text" class="" id="username" placeholder="用户名" name="username">
+            <input type="text" class="" id="username" placeholder="用户名" name="username" required>
           </div>
           <div class="am-form-group">
-            <input type="password" class="" id="password" placeholder="密码" name="password">
+            <input type="password" class="" id="password" placeholder="密码" name="password" required>
           </div>
-          <!-- <div class="am-form-group"> -->
-            <button type="submit" class="am-btn am-btn-primary am-btn-block">登录</button>
-          <!-- </div> -->
+          <div class="am-form-group" id="error-container">
+            
+          </div>
+          <button type="submit" class="am-btn am-btn-primary am-btn-block">登录</button>
         </fieldset>
       </form>
     </div>
@@ -68,7 +69,7 @@
 
   <footer class="am-g" style="bottom: 0;position: fixed">
     <hr>
-    <p class="am-padding-left am-text-center">© 2015 AllMobilize, Inc. Licensed under MIT license.</p>
+    <p class="am-padding-left am-text-center">{{{ $powered_by }}}</p>
   </footer>
   <!--[if lt IE 9]>
   <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
@@ -79,11 +80,41 @@
   <![endif]-->
   <!--[if (gte IE 9)|!(IE)]><!-->
   <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/amazeui.min.js"></script>
+  <script src="assets/js/amazeui.min.js"></script>]
+  <script src="assets/js/jquery.form.min.js"></script>
   <!--<![endif]-->
   <script>
+    function log(msg) {
+      return console.log(msg);
+    }
+
     $("#login-toggle").on("click", function(){
       $("#login-form input:first").focus();
+    });
+
+    var $errorContainer = $("#error-container");
+
+    $("#login-form").ajaxForm({
+        target:        '#error-output',   // target element(s) to be updated with server response
+        url:             'login/check',
+        type:                   'get',
+        dataType:               'json',
+        clearForm:                true,
+        beforeSubmit:  function(formData, jqForm, options) {
+          $errorContainer.empty();
+        },  // pre-submit callback 
+        success:       function(responseText, statusText, xhr, $form) {
+          log(responseText);
+          log(statusText);
+          log(xhr);
+          log($form);
+          if (responseText.status == 'success') {
+
+          } else {
+            var alert = '<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button>' + responseText.message + '</div>';   
+            $errorContainer.append(alert);
+          }
+        }
     });
   </script>
 </body>

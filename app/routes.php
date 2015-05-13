@@ -12,16 +12,21 @@
 */
 
 Route::group(array('before' => 'signed'), function () {
+    
     Route::get('/hello', function() {
         return View::make('hello');
     });
+
+    Route::get('/', function() {
+        return View::make('hello');
+    });
+
+    Route::get('project/create', 'ProjectController@create');
+    Route::get('logout', 'UserController@logout');
 });
 
-Route::get('/', function() {
-	return View::make('hello');
-});
+
 
 Route::get('login', 'UserController@loginView');
 Route::get('login/check', 'UserController@login');
 Route::get('user/create', 'UserController@create');
-Route::get('project/create', 'ProjectController@create');

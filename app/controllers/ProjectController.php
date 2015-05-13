@@ -5,7 +5,7 @@ class ProjectController extends BaseController {
         $res = false;
         try {
             $res = ProjectService::create(Input::all());
-        } catch (Exception $e) {echo $e->getMessage();
+        } catch (Exception $e) {
              return Util::response_error_msg($e->getMessage());
         }
 

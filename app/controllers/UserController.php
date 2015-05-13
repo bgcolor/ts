@@ -4,7 +4,10 @@ class UserController extends BaseController {
     public function loginView() {
         if (UserService::check()) return Redirect::to('/');
         $pageVariable = array(
-            
+            'login_title' => ConstantStringService::get('login_title'),
+            'system_title' => ConstantStringService::get('system_title'),
+            'system_sub_title' => ConstantStringService::get('system_sub_title'),
+            'powered_by' => ConstantStringService::get('powered_by')
         );
         return View::make('login',$pageVariable);
     }
@@ -36,7 +39,7 @@ class UserController extends BaseController {
      * @return none
      */
     public function logout() {
-        User::logout();
+        UserService::logout();
         return Redirect::to('/');
     }
 

@@ -1,8 +1,8 @@
 <?php 
 class ConstantStringService {
     
-    public function get($key) {
-        $value = Constant::whereRaw('key = ?',array($key))->first()->value;
+    public static function get($id) {
+        $value = ConstantString::find($id)->value;
         return $value ? $value : '';
     }
 }
