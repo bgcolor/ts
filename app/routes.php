@@ -21,12 +21,14 @@ Route::group(array('before' => 'signed'), function () {
         return View::make('hello');
     });
 
-    Route::get('project/create', 'ProjectController@create');
+    Route::post('project/create', 'ProjectController@create');
     Route::get('logout', 'UserController@logout');
+    Route::post('user/create', 'UserController@create');
+    Route::get('user/password/change', 'UserController@changePassword');
 });
 
 
 
 Route::get('login', 'UserController@loginView');
 Route::get('login/check', 'UserController@login');
-Route::get('user/create', 'UserController@create');
+

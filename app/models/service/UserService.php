@@ -124,4 +124,32 @@ class UserService {
 
         return $params;
     }
+
+    public static change_password($params) {
+        //validate
+        if (!Util::validate($params,array(
+                'old-password' => 'required|min:6|max:20',
+                'new-password' => 'required|min:6|max:20',
+            ))) {
+            throw new Exception('1000');
+        }
+
+        if (!AuthService::find('change_pass')) {
+            throw new Exception('0001');
+        }
+
+        $username = Session::get('username');
+        $uid = Session::get('uid');
+
+        $check_old_pass = UserService::check_old_password($username,$params['old-password']);
+        
+        if ($check_old_pass === true) {
+            $user =  User::where('username','=',$username)->first();
+            $user->password = Hash::make($params['password']); 
+            return $user->save() ? true : false;
+        } else {
+            throw new Exception('1010');
+        }
+
+    }
 }

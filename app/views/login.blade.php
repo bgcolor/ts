@@ -69,7 +69,7 @@
 
   <footer class="am-g" style="bottom: 0;position: fixed">
     <hr>
-    <p class="am-padding-left am-text-center">{{{ $powered_by }}}</p>
+    <p class="am-padding-left am-text-center"><span class="am-icon-copyright"></span>{{{ $powered_by }}}</p>
   </footer>
   <!--[if lt IE 9]>
   <script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
@@ -109,7 +109,7 @@
           log(xhr);
           log($form);
           if (responseText.status == 'success') {
-
+            location.href = 'admin/index';
           } else {
             var alert = '<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button>' + responseText.message + '</div>';   
             $errorContainer.append(alert);
