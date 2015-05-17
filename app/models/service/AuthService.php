@@ -1,5 +1,5 @@
 <?php 
-class AuthService {
+class AuthService extends Service {
 
     public static function find($id) {
         $role = Session::get('role');
@@ -13,5 +13,6 @@ class AuthService {
         foreach ($arr as $index) {
             $res[$index] = AuthService::find($index, $role);
         }
+        return $res;
     }
 }

@@ -1,5 +1,5 @@
 <?php 
-class UserService {
+class UserService extends Service {
     public static function check() {
         //check if the user has already signed
         return Session::has('username') ? true : false;
@@ -125,7 +125,7 @@ class UserService {
         return $params;
     }
 
-    public static change_password($params) {
+    public static function change_password($params) {
         //validate
         if (!Util::validate($params,array(
                 'old-password' => 'required|min:6|max:20',

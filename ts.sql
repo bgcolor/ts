@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.6
+-- version 4.4.7
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015-05-13 09:09:14
+-- Generation Time: 2015-05-17 13:00:41
 -- 服务器版本： 5.6.24-log
 -- PHP Version: 5.5.24
 
@@ -23,6 +23,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `authority`
+--
+
+CREATE TABLE IF NOT EXISTS `authority` (
+  `id` varchar(45) NOT NULL,
+  `role` int(11) NOT NULL,
+  `description` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统权限表，id的键值与views层变量对应，role为角色身份。用户角色,1->学徒,2->评估师,3->内审员,4->外审员,5->系统管理员';
+
+--
+-- 转存表中的数据 `authority`
+--
+
+INSERT INTO `authority` (`id`, `role`, `description`) VALUES
+('change_others_pass', 5, '修改其他账号密码'),
+('change_pass', 1, '修改本账号密码'),
+('change_pass', 2, '修改本账号密码'),
+('change_pass', 3, '修改本账号密码'),
+('change_pass', 4, '修改本账号密码'),
+('change_pass', 5, '修改本账号密码'),
+('evaluate_others', 3, '评审他人'),
+('evaluate_others', 5, '评审他人');
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `constant_string`
 --
 
@@ -37,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `constant_string` (
 
 INSERT INTO `constant_string` (`id`, `value`) VALUES
 ('login_title', '登录'),
-('powered_by', '@ 2015 物流管理培训系统 备案号:xxxx'),
+('powered_by', ' 2015 物流管理培训系统 备案号:xxxx'),
 ('system_sub_title', '管理平台'),
 ('system_title', '物流管理培训系统');
 
@@ -50,8 +76,6 @@ INSERT INTO `constant_string` (`id`, `value`) VALUES
 CREATE TABLE IF NOT EXISTS `download` (
   `id` int(11) NOT NULL COMMENT '下载记录id',
   `file_id` int(11) NOT NULL COMMENT '文件id',
-  `owner_id` int(11) NOT NULL COMMENT '上传者id',
-  `owner_name` varchar(45) NOT NULL COMMENT '上传者姓名',
   `downloader_id` int(11) NOT NULL COMMENT '下载者id',
   `downloader_name` varchar(45) NOT NULL COMMENT '下载者姓名',
   `pathname` varchar(255) NOT NULL COMMENT '文件路径名',
@@ -71,7 +95,9 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `evaluator_id` int(11) NOT NULL COMMENT '评审人id',
   `evaluator_name` varchar(45) NOT NULL COMMENT '评审人姓名',
   `progress` int(11) NOT NULL COMMENT '进度百分数',
-  `description` varchar(255) DEFAULT NULL COMMENT '评审描述'
+  `description` varchar(255) DEFAULT NULL COMMENT '评审描述',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `update_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评审表';
 
 -- --------------------------------------------------------
@@ -85,8 +111,8 @@ CREATE TABLE IF NOT EXISTS `file` (
   `pathname` varchar(255) NOT NULL COMMENT '文件路径名',
   `filename` varchar(255) NOT NULL COMMENT '文件名',
   `user_id` int(11) NOT NULL COMMENT '上传文件的用户id',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间(无意义,框架需要)'
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间(无意义,框架需要)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='上传文件表';
 
 -- --------------------------------------------------------
@@ -100,15 +126,17 @@ CREATE TABLE IF NOT EXISTS `project` (
   `name` varchar(45) NOT NULL COMMENT '项目名称',
   `description` varchar(255) DEFAULT NULL COMMENT '项目描述',
   `creator_id` int(11) DEFAULT NULL COMMENT '创建者id',
-  `creator_name` varchar(45) DEFAULT NULL COMMENT '创建者姓名'
+  `creator_name` varchar(45) DEFAULT NULL COMMENT '创建者姓名',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目表';
 
 --
 -- 转存表中的数据 `project`
 --
 
-INSERT INTO `project` (`id`, `name`, `description`, `creator_id`, `creator_name`) VALUES
-(1, '项目一', '项目一描述', 1, '系统管理员');
+INSERT INTO `project` (`id`, `name`, `description`, `creator_id`, `creator_name`, `created_at`, `updated_at`) VALUES
+(1, '项目一', '项目一描述', 1, '系统管理员', '2015-05-17 03:02:03', '2015-05-17 03:02:03');
 
 -- --------------------------------------------------------
 
@@ -126,6 +154,7 @@ CREATE TABLE IF NOT EXISTS `status_info` (
 --
 
 INSERT INTO `status_info` (`status_code`, `description`) VALUES
+('0001', '没有相关权限'),
 ('1000', '不正确的参数'),
 ('1001', '必须指定学徒的导师'),
 ('1002', '选择系统中已存在的导师'),
@@ -136,11 +165,19 @@ INSERT INTO `status_info` (`status_code`, `description`) VALUES
 ('1007', '用户名或密码错误'),
 ('1008', '您已登录成功！'),
 ('1009', '请选择已存在的项目'),
+('1010', '旧密码错误，请重新输入'),
+('2000', '上传文件参数错误'),
 ('2001', '上传文件大小超过限制'),
 ('2002', '文件上传成功'),
+('2003', '没有文件上传'),
 ('3000', '不正确的参数'),
 ('3001', '您已成功添加项目'),
-('503', 'Internal Server Error');
+('4000', '不正确的参数'),
+('4001', '没有评审权限'),
+('4002', '您已评审成功！'),
+('503', 'Internal Server Error'),
+('6000', '下载文件参数错误'),
+('6001', '没有找到要下载的文件！');
 
 -- --------------------------------------------------------
 
@@ -169,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `role`, `project_id`, `name`, `email`, `phone_no`, `tutor_id`, `tutor_name`, `created_at`, `updated_at`, `photo_url`) VALUES
-(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员', NULL, NULL, NULL, NULL, '2015-05-08 07:07:44', '2015-05-08 07:07:44', NULL),
+(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员', NULL, NULL, NULL, NULL, '2015-05-08 07:07:44', '2015-05-17 07:10:29', NULL),
 (2, 'eauditor', '$2y$10$RJWyzjauANVkZUUi7Pj3y.otrs5XpNI.b8tr91.vem30B4a3mcYqW', 4, 1, '外审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:17:32', '2015-05-12 07:17:32', NULL),
 (3, 'iauditor', '$2y$10$KLSt6I/6GkmvDSgJz/NZnuue/EVVFiqSxSYdijOqkasPN2rqF.I8u', 3, 1, '内审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:18:02', '2015-05-12 07:18:02', NULL),
 (4, 'tutor', '$2y$10$UQHaGsU4ON3QXsJyn.mmfOEWMstaGRKBG/AsK.Sp8T0Y3NtJ7E7ba', 2, 1, '评估师A', NULL, NULL, 3, '内审员A', '2015-05-12 07:19:02', '2015-05-12 07:19:02', NULL),
@@ -179,6 +216,12 @@ INSERT INTO `user` (`id`, `username`, `password`, `role`, `project_id`, `name`, 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `authority`
+--
+ALTER TABLE `authority`
+  ADD PRIMARY KEY (`id`,`role`);
 
 --
 -- Indexes for table `constant_string`

@@ -1,5 +1,5 @@
 <?php 
-class ConstantStringService {
+class ConstantStringService extends Service {
     
     public static function get($id) {
         $value = ConstantString::find($id)->value;

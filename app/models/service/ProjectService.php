@@ -1,5 +1,5 @@
 <?php 
-class ProjectService {
+class ProjectService extends Service {
 
     public static function create($params) {
         if (!Util::validate($params,array(

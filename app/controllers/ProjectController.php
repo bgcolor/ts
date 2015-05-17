@@ -9,7 +9,7 @@ class ProjectController extends BaseController {
              return Util::response_error_msg($e->getMessage());
         }
 
-         if ($res === true) {
+        if ($res === true) {
             return Response::json(array(
                 'status' => 'success',
                 'message' => StatusInfoService::get_description('3001')

@@ -1,19 +1,22 @@
 <?php 
 class DownloadController extends BaseController {
 
-    public function download() {
-        if ( !Util::validate(
-                Input::all(),
-                array(
-                    'pathname' => 'required'
-                )
-            ) ) {
-            return Response::json( array(
-                'status' => 'fail', 
-                'errorCode' => '6000',
-                'message' =>  StatusInfo::get_description('6000');
-            ));
+    public function download_only() {
+        $res = false;
+        try {
+            $res = DownloadService::download_only(Input::all());
+        } catch (Exception $e) {
+            return Util::response_err_msg('503');
         }
-        return Response::download('uploads/'.Input::get('pathname'));
+
+        return $res;
+    }
+
+    public function download_and_process() {
+        try {
+            return DownloadService::download_and_process(Input::all());
+        } catch (Exception $e) {
+            return Util::response_err_msg($e->getMessage());
+        }
     }
 }
