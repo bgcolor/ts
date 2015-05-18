@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015-05-17 13:00:41
+-- Generation Time: 2015-05-18 10:17:00
 -- 服务器版本： 5.6.24-log
 -- PHP Version: 5.5.24
 
@@ -43,8 +43,25 @@ INSERT INTO `authority` (`id`, `role`, `description`) VALUES
 ('change_pass', 3, '修改本账号密码'),
 ('change_pass', 4, '修改本账号密码'),
 ('change_pass', 5, '修改本账号密码'),
+('create_project', 5, '添加项目'),
+('create_user', 5, '添加用户'),
 ('evaluate_others', 3, '评审他人'),
-('evaluate_others', 5, '评审他人');
+('evaluate_others', 5, '评审他人'),
+('my_download', 1, '查看我的下载'),
+('my_download', 2, '查看我的下载'),
+('my_download', 3, '查看我的下载'),
+('my_profile', 1, '查看我的信息'),
+('my_profile', 2, '查看我的信息'),
+('my_profile', 3, '查看我的信息'),
+('my_profile', 4, '查看我的信息'),
+('my_profile', 5, '查看我的信息'),
+('my_student', 2, '查看我的学徒'),
+('my_student', 3, '查看我的学徒'),
+('my_tutor', 1, '查看我的导师'),
+('my_tutor', 2, '查看我的导师'),
+('my_upload', 1, '查看我的上传'),
+('my_upload', 2, '查看我的上传'),
+('my_upload', 3, '查看我的上传');
 
 -- --------------------------------------------------------
 
@@ -63,7 +80,10 @@ CREATE TABLE IF NOT EXISTS `constant_string` (
 
 INSERT INTO `constant_string` (`id`, `value`) VALUES
 ('login_title', '登录'),
+('photo_remark1', '为了更好低让系统显示，上传头像的长宽比应为1:1，大小不得超过xxx'),
+('photo_remark2', '请选择要上传的文件'),
 ('powered_by', ' 2015 物流管理培训系统 备案号:xxxx'),
+('profile_title', '我的信息'),
 ('system_sub_title', '管理平台'),
 ('system_title', '物流管理培训系统');
 
@@ -206,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `role`, `project_id`, `name`, `email`, `phone_no`, `tutor_id`, `tutor_name`, `created_at`, `updated_at`, `photo_url`) VALUES
-(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员', NULL, NULL, NULL, NULL, '2015-05-08 07:07:44', '2015-05-17 07:10:29', NULL),
+(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, 1, '系统管理员A', NULL, NULL, NULL, NULL, '2015-05-08 07:07:44', '2015-05-18 07:48:55', NULL),
 (2, 'eauditor', '$2y$10$RJWyzjauANVkZUUi7Pj3y.otrs5XpNI.b8tr91.vem30B4a3mcYqW', 4, 1, '外审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:17:32', '2015-05-12 07:17:32', NULL),
 (3, 'iauditor', '$2y$10$KLSt6I/6GkmvDSgJz/NZnuue/EVVFiqSxSYdijOqkasPN2rqF.I8u', 3, 1, '内审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:18:02', '2015-05-12 07:18:02', NULL),
 (4, 'tutor', '$2y$10$UQHaGsU4ON3QXsJyn.mmfOEWMstaGRKBG/AsK.Sp8T0Y3NtJ7E7ba', 2, 1, '评估师A', NULL, NULL, 3, '内审员A', '2015-05-12 07:19:02', '2015-05-12 07:19:02', NULL),

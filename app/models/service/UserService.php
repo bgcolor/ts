@@ -152,4 +152,12 @@ class UserService extends Service {
         }
 
     }
+
+    public static function get_user_array($id) {
+        $user = User::find($id);
+        $project = Project::find($user->project_id);
+        $user_arr = $user->toArray();
+        $user_arr['project_name'] = $project->name;
+        return $user_arr;
+    }
 }

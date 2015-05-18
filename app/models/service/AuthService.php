@@ -11,7 +11,7 @@ class AuthService extends Service {
         $role = Session::get('role');
         $res = array();
         foreach ($arr as $index) {
-            $res[$index] = AuthService::find($index, $role);
+            $res[$index] = AuthService::find($index, $role) ? true : false;
         }
         return $res;
     }

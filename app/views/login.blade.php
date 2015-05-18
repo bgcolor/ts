@@ -82,12 +82,9 @@
   <script src="assets/js/jquery.min.js"></script>
   <script src="assets/js/amazeui.min.js"></script>]
   <script src="assets/js/jquery.form.min.js"></script>
+  <script src="assets/js/common.js"></script>
   <!--<![endif]-->
   <script>
-    function log(msg) {
-      return console.log(msg);
-    }
-
     $("#login-toggle").on("click", function(){
       $("#login-form input:first").focus();
     });
@@ -109,7 +106,7 @@
           log(xhr);
           log($form);
           if (responseText.status == 'success') {
-            location.href = 'admin/index';
+            location.href = window.baseUrl;
           } else {
             var alert = '<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button>' + responseText.message + '</div>';   
             $errorContainer.append(alert);

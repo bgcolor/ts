@@ -13,13 +13,7 @@
 
 Route::group(array('before' => 'signed'), function () {
     
-    Route::get('/hello', function() {
-        return View::make('hello');
-    });
-
-    Route::get('/', function() {
-        return View::make('hello');
-    });
+    Route::get('/', 'ViewController@index');
 
     Route::post('project/create', 'ProjectController@create');
     Route::get('logout', 'UserController@logout');
@@ -27,8 +21,8 @@ Route::group(array('before' => 'signed'), function () {
     Route::get('user/password/change', 'UserController@changePassword');
 });
 
-
-
 Route::get('login', 'UserController@loginView');
 Route::get('login/check', 'UserController@login');
-
+Route::get('/hello', function() {
+    return View::make('hello');
+});
