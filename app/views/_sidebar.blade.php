@@ -3,7 +3,7 @@
     <ul class="am-list admin-sidebar-list">
       <li><a href="admin/index" class="am-cf">您好，{{{ $username }}}</a></li>
       <?php if ($my_profile === true) { ?>
-        <li><a href="admin/index" class="am-cf"><span class="am-icon-user"></span> 我的信息</a></li>
+        <li><a href="/" class="am-cf"><span class="am-icon-user"></span> 我的信息</a></li>
       <?php } ?>
       <?php if ($my_tutor === true) { ?>
       <li><a href="admin/tutor"><span class="am-icon-mortar-board"></span> 我的导师</a></li>

@@ -8,7 +8,7 @@ class DownloadService extends Service {
                     'pathname' => 'required'
                 )
             ) ) {
-            return Util::response_err_msg('6000');
+            return Util::response_error_msg('6000');
         }
         return Response::download(Input::get('pathname'));
 	}
@@ -31,8 +31,16 @@ class DownloadService extends Service {
         	throw new Exception('6000');
         }
 
+        $owner = User::find($file->user_id);
+
+        if (!$owner) {
+            throw new Exception('503');
+        }
+
         $download = new Download();
         $download->file_id = $params['file_id'];
+        $download->owner_id = $owner->id;
+        $download->owner_name = $owner->name;
         $download->pathname = $file->pathname;
         $download->filename = $file->filename;
         $download->downloader_id = $download->id;
@@ -42,6 +50,6 @@ class DownloadService extends Service {
         	return Response::download($file->pathname);
         }
 
-        return Util::response_err_msg('6001');
+        return Util::response_error_msg('6001');
 	}
 }

@@ -12,6 +12,24 @@ class UserController extends BaseController {
         return View::make('login',$page_variable);
     }
 
+    public function update() {
+        $res = false;
+        try {
+            $res = UserService::update(Input::all());
+        } catch (Exception $e) {
+            return Util::response_error_msg($e->getMessage());
+        }
+
+        if ($res === true) {
+            return Response::json(array(
+                'status' => 'success',
+                'message' => StatusInfoService::get_description('1011')
+            ));
+        } else {
+            return Util::response_error_msg('503');
+        }
+    }
+
     /**
      * login user.
      * @return json give a message if fail

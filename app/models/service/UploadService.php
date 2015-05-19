@@ -1,4 +1,5 @@
 <?php 
+error_reporting(0);
 class UploadService extends Service {
 
     /**
@@ -7,7 +8,7 @@ class UploadService extends Service {
      */
     public static function upload_only($file) {
     	$username = Session::get('username');
-    	return 'uploads/'.$username.UploadService::process($file);
+    	return 'uploads/'.$username.'/'.UploadService::process($file);
     }
 
     /**
@@ -52,7 +53,7 @@ class UploadService extends Service {
 
     	$username = Session::get('username');
 
-    	$file->pathname = 'uploads/'.$username.$filename;
+    	$file->pathname = 'uploads/'.$username.'/'.$filename;
     	$file->filename = $filename;
 
     	if (!$file->save()) {

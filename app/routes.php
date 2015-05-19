@@ -18,6 +18,9 @@ Route::group(array('before' => 'signed'), function () {
     Route::post('project/create', 'ProjectController@create');
     Route::get('logout', 'UserController@logout');
     Route::post('user/create', 'UserController@create');
+    Route::post('user/update', 'UserController@update');
+    Route::post('upload/only', 'UploadController@upload_only');
+    Route::post('upload/process', 'UploadController@upload_and_process');
     Route::get('user/password/change', 'UserController@changePassword');
 });
 

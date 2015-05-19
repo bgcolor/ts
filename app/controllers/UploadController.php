@@ -1,4 +1,5 @@
 <?php 
+error_reporting(0);
 class UploadController extends BaseController {
   
   public function upload_only() {
@@ -11,7 +12,7 @@ class UploadController extends BaseController {
             return Response::json(array(
                 'status' => 'fail',
                 'errorCode' => '2001',
-                'message' => StatusInfoService::get_description('2001');
+                'message' => StatusInfoService::get_description('2001')
             ));
         }
 
@@ -19,14 +20,14 @@ class UploadController extends BaseController {
             return Response::json(array(
                 'status' => 'success',
                 'data' => $pathname,
-                'message' => StatusInfoService::get_description('2002');
+                'message' => StatusInfoService::get_description('2002')
             ));
         } else {
-            return Util::response_err_msg('503');
+            return Util::response_error_msg('503');
         }    
     }
 
-    return Util::response_err_msg('2003');
+    return Util::response_error_msg('2003');
   }
 
   public function upload_and_process() {
@@ -37,19 +38,19 @@ class UploadController extends BaseController {
         try {
             $res = UploadService::upload_and_process($file, Input::except('userfile'));
         } catch (Exception $e) {
-            Util::response_err_msg($e->getMessage());
+            Util::response_error_msg($e->getMessage());
         }
 
         if ($res === true) {
            return Response::json(array(
                 'status' => 'success',
-                'message' => StatusInfoService::get_description('2002');
+                'message' => StatusInfoService::get_description('2002')
             )); 
         } else {
-            return Util::response_err_msg('503');
+            return Util::response_error_msg('503');
         }
     }
 
-    return Util::response_err_msg('2003');
+    return Util::response_error_msg('2003');
   }
 }

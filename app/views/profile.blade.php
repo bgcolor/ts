@@ -140,11 +140,95 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/amazeui.min.js"></script>
     <script src="assets/js/jquery.form.min.js"></script>
+    <script src="assets/js/common.js"></script>
     <!--<![endif]-->
     <script>
-    function log(msg) {
-    return console.log(msg);
-    }
+    (function(){
+
+      // 选择头像
+      $("[name=userfile]").on("change",function(){
+        var value = this.value.split("\\");
+        var len = value.length;
+        var filename = value[len - 1];
+        var point = $("#upload-photo p");
+        var panel = '<div class="am-panel am-panel-default"><div class="am-panel-bd"><small>' + filename + '</small><a href="javascript:;" class="am-close">&times;</a><div class="am-progress am-progress-xs am-progress-striped am-active" style="margin-bottom: 0;margin-top: .6rem"><div class="am-progress-bar am-progress-bar-secondary"  style="width: 0%"></div></div></div>';
+        log(filename);
+
+        $("#upload-photo").ajaxSubmit({
+          url: window.baseUrl + 'upload/only',
+          type: 'post',
+          beforeSend: function(xhr) {
+              var percentVal = '0%';
+              
+              $("#upload-photo .am-panel").remove();
+              point.after(panel);
+
+              $(".am-close").on("click", function(){
+                xhr.abort();
+                // log('abort');
+                $("#upload-photo .am-panel").remove();
+              });
+          },
+          uploadProgress: function(event, position, total, percentComplete) {
+              var percentVal = percentComplete + '%';
+              // log(percentVal);
+              $("#upload-photo .am-progress-bar").css({
+                width: percentVal
+              });
+          },
+          success: function(responseText, statusText, xhr, $form) {
+            // log('success');
+            if (responseText.status == 'success') {
+              $("#update-photo [name=photo_url]").val(window.baseUrl + responseText.data);
+              $("#photo-image").attr("src",window.baseUrl + responseText.data);
+              $("#upload-photo .am-panel-bd a").removeClass("am-close").addClass("am-icon-check-circle am-success").text("");
+              $("#upload-photo .am-progress-bar").css({
+                width: '100%'
+              });
+
+              alert(responseText.message);
+            } else {
+              if (responseText.message) {
+                alert(responseText.message);
+              }
+            }
+          },
+          complete: function(xhr) {
+            if (xhr.responseText.indexOf('error') != -1) {
+              alert('文件大小超过限制');
+              $("#upload-photo .am-panel").remove();
+            }
+          }
+        });
+      });
+
+      // 头像保存按钮按下
+      $("#update-photo-btn").on("click",function(){
+        var $theForm = $("#update-photo");
+        $theForm.ajaxSubmit({
+          url: window.baseUrl + 'user/update',
+          type: 'post',
+          beforeSend: function(xhr) {
+            if ($("#update-photo [name=photo_url]").val().trim() == '') {
+              alert('您还未上传！');
+              return false;
+            }
+          },
+          success: function(responseText, statusText, xhr, $form) {
+            // log('success');
+            if (responseText.status) {
+              alert(responseText.message);
+            }
+          }
+        })
+      });
+
+      $("#profile-btn").on("click",function(){
+        $("#profile-form input:not(:disabled)")
+      });
+
+    })();
+    
     </script>
   </body>
 </html>

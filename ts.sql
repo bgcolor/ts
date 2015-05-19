@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.7
+-- version 4.4.6
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015-05-18 10:17:00
+-- Generation Time: 2015-05-19 08:58:31
 -- 服务器版本： 5.6.24-log
 -- PHP Version: 5.5.24
 
@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `authority` (
 --
 
 INSERT INTO `authority` (`id`, `role`, `description`) VALUES
+('', 0, NULL),
 ('change_others_pass', 5, '修改其他账号密码'),
 ('change_pass', 1, '修改本账号密码'),
 ('change_pass', 2, '修改本账号密码'),
@@ -55,6 +56,8 @@ INSERT INTO `authority` (`id`, `role`, `description`) VALUES
 ('my_profile', 3, '查看我的信息'),
 ('my_profile', 4, '查看我的信息'),
 ('my_profile', 5, '查看我的信息'),
+('my_progress', 1, '显示我的进度'),
+('my_progress', 2, '显示我的进度'),
 ('my_student', 2, '查看我的学徒'),
 ('my_student', 3, '查看我的学徒'),
 ('my_tutor', 1, '查看我的导师'),
@@ -80,7 +83,10 @@ CREATE TABLE IF NOT EXISTS `constant_string` (
 
 INSERT INTO `constant_string` (`id`, `value`) VALUES
 ('login_title', '登录'),
-('photo_remark1', '为了更好低让系统显示，上传头像的长宽比应为1:1，大小不得超过xxx'),
+('no_evaluation', '评审员还未评审'),
+('no_students', '暂无学徒'),
+('no_tutors', '暂无导师'),
+('photo_remark1', '为了更好低让系统显示，上传头像的长宽比应为1:1，大小不得超过xxx(支持png,gif,jpeg,jpg)'),
 ('photo_remark2', '请选择要上传的文件'),
 ('powered_by', ' 2015 物流管理培训系统 备案号:xxxx'),
 ('profile_title', '我的信息'),
@@ -101,7 +107,9 @@ CREATE TABLE IF NOT EXISTS `download` (
   `pathname` varchar(255) NOT NULL COMMENT '文件路径名',
   `filename` varchar(255) NOT NULL COMMENT '文件名',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间（无实际意义）',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下载时间'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '下载时间',
+  `owner_id` int(11) NOT NULL,
+  `owner_name` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='下载记录表';
 
 -- --------------------------------------------------------
@@ -116,8 +124,8 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `evaluator_name` varchar(45) NOT NULL COMMENT '评审人姓名',
   `progress` int(11) NOT NULL COMMENT '进度百分数',
   `description` varchar(255) DEFAULT NULL COMMENT '评审描述',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `update_at` timestamp NULL DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评审表';
 
 -- --------------------------------------------------------
@@ -131,8 +139,8 @@ CREATE TABLE IF NOT EXISTS `file` (
   `pathname` varchar(255) NOT NULL COMMENT '文件路径名',
   `filename` varchar(255) NOT NULL COMMENT '文件名',
   `user_id` int(11) NOT NULL COMMENT '上传文件的用户id',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间(无意义,框架需要)'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间(无意义,框架需要)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='上传文件表';
 
 -- --------------------------------------------------------
@@ -147,8 +155,8 @@ CREATE TABLE IF NOT EXISTS `project` (
   `description` varchar(255) DEFAULT NULL COMMENT '项目描述',
   `creator_id` int(11) DEFAULT NULL COMMENT '创建者id',
   `creator_name` varchar(45) DEFAULT NULL COMMENT '创建者姓名',
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目表';
 
 --
@@ -175,6 +183,7 @@ CREATE TABLE IF NOT EXISTS `status_info` (
 
 INSERT INTO `status_info` (`status_code`, `description`) VALUES
 ('0001', '没有相关权限'),
+('0002', '非法传参'),
 ('1000', '不正确的参数'),
 ('1001', '必须指定学徒的导师'),
 ('1002', '选择系统中已存在的导师'),
@@ -186,6 +195,7 @@ INSERT INTO `status_info` (`status_code`, `description`) VALUES
 ('1008', '您已登录成功！'),
 ('1009', '请选择已存在的项目'),
 ('1010', '旧密码错误，请重新输入'),
+('1011', '信息修改成功！'),
 ('2000', '上传文件参数错误'),
 ('2001', '上传文件大小超过限制'),
 ('2002', '文件上传成功'),
@@ -216,8 +226,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `phone_no` varchar(45) DEFAULT NULL COMMENT '用户电话号码',
   `tutor_id` int(11) DEFAULT NULL COMMENT '导师id',
   `tutor_name` varchar(45) DEFAULT NULL COMMENT '导师姓名',
-  `created_at` timestamp NULL DEFAULT NULL COMMENT '创建时间',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT '更新时间',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '更新时间',
   `photo_url` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='用户表,系统中以role区分角色';
 
@@ -226,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `role`, `project_id`, `name`, `email`, `phone_no`, `tutor_id`, `tutor_name`, `created_at`, `updated_at`, `photo_url`) VALUES
-(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, 1, '系统管理员A', NULL, NULL, NULL, NULL, '2015-05-08 07:07:44', '2015-05-18 07:48:55', NULL),
+(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员A', NULL, '18755554678', NULL, NULL, '2015-05-19 05:23:11', '2015-05-19 05:23:11', 'http://amui.qiniudn.com/bw-2014-06-19.jpg?imageView/1/w/1000/h/1000/q/80'),
 (2, 'eauditor', '$2y$10$RJWyzjauANVkZUUi7Pj3y.otrs5XpNI.b8tr91.vem30B4a3mcYqW', 4, 1, '外审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:17:32', '2015-05-12 07:17:32', NULL),
 (3, 'iauditor', '$2y$10$KLSt6I/6GkmvDSgJz/NZnuue/EVVFiqSxSYdijOqkasPN2rqF.I8u', 3, 1, '内审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:18:02', '2015-05-12 07:18:02', NULL),
 (4, 'tutor', '$2y$10$UQHaGsU4ON3QXsJyn.mmfOEWMstaGRKBG/AsK.Sp8T0Y3NtJ7E7ba', 2, 1, '评估师A', NULL, NULL, 3, '内审员A', '2015-05-12 07:19:02', '2015-05-12 07:19:02', NULL),
@@ -271,7 +281,8 @@ ALTER TABLE `file`
 -- Indexes for table `project`
 --
 ALTER TABLE `project`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name_UNIQUE` (`name`);
 
 --
 -- Indexes for table `status_info`

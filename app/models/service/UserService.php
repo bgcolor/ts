@@ -155,9 +155,52 @@ class UserService extends Service {
 
     public static function get_user_array($id) {
         $user = User::find($id);
-        $project = Project::find($user->project_id);
         $user_arr = $user->toArray();
-        $user_arr['project_name'] = $project->name;
+
+        $project = Project::find($user->project_id);
+        if ($project) {
+            $user_arr['project_name'] = $project;
+        }
+
+        $evaluation = Evaluation::whereRaw('user_id = ?', array($id))->first();
+        if ($evaluation) {
+            $user_arr['evaluation'] = $evaluation;
+        }
+
+        $students = User::whereRaw('tutor_id = ?', array($id))->get();
+        if ($students) {
+            $user_arr['students'] = $students;
+        }
+
+        $tutor = User::find($user->tutor_id);
+        if ($tutor) {
+            $user_arr['tutor'] = $tutor;
+        }
+
         return $user_arr;
+    }
+
+    public function update($params) {
+        if (!Util::validate($params,array(
+                'id' => 'required',
+            ))) {
+            throw new Exception('1000');
+        }
+
+        $user = User::find($params['id']);
+
+        if (!$user) {
+            throw new Exception('1000');
+        }
+
+        foreach ( $params as $key => $value ) {
+            if ($key == 'password') {
+                throw new Exception('0002');
+            }
+
+            $user[$key] = $value;
+        }
+
+        return $user->save() ? true : false;
     }
 }
