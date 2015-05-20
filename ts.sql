@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: 2015-05-19 08:58:31
+-- Generation Time: 2015-05-20 06:57:43
 -- 服务器版本： 5.6.24-log
 -- PHP Version: 5.5.24
 
@@ -82,14 +82,18 @@ CREATE TABLE IF NOT EXISTS `constant_string` (
 --
 
 INSERT INTO `constant_string` (`id`, `value`) VALUES
+('list_count', '5'),
 ('login_title', '登录'),
+('no_downloads', '暂无资料下载'),
 ('no_evaluation', '评审员还未评审'),
 ('no_students', '暂无学徒'),
 ('no_tutors', '暂无导师'),
+('no_uploads', '您还未上传资料'),
 ('photo_remark1', '为了更好低让系统显示，上传头像的长宽比应为1:1，大小不得超过xxx(支持png,gif,jpeg,jpg)'),
 ('photo_remark2', '请选择要上传的文件'),
 ('powered_by', ' 2015 物流管理培训系统 备案号:xxxx'),
 ('profile_title', '我的信息'),
+('public_msg', '如对系统使用有疑问请咨询系统管理员，联系方式：xxx@xx.com'),
 ('system_sub_title', '管理平台'),
 ('system_title', '物流管理培训系统');
 
@@ -127,6 +131,13 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `update_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评审表';
+
+--
+-- 转存表中的数据 `evaluation`
+--
+
+INSERT INTO `evaluation` (`user_id`, `evaluator_id`, `evaluator_name`, `progress`, `description`, `created_at`, `update_at`) VALUES
+(4, 3, '内审员A', 60, '完成了60%的学习情况', '2015-05-20 03:31:24', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -182,32 +193,33 @@ CREATE TABLE IF NOT EXISTS `status_info` (
 --
 
 INSERT INTO `status_info` (`status_code`, `description`) VALUES
-('0001', '没有相关权限'),
+('0001', '没有相关权限！'),
 ('0002', '非法传参'),
 ('1000', '不正确的参数'),
-('1001', '必须指定学徒的导师'),
-('1002', '选择系统中已存在的导师'),
-('1003', '用户名已存在'),
-('1004', '您已成功添加用户'),
-('1005', '用户名密码为空'),
-('1006', '用户不存在'),
-('1007', '用户名或密码错误'),
+('1001', '必须指定学徒的导师！'),
+('1002', '选择系统中已存在的导师！'),
+('1003', '用户名已存在！'),
+('1004', '您已成功添加用户！'),
+('1005', '用户名密码为空！'),
+('1006', '用户不存在！'),
+('1007', '用户名或密码错误！'),
 ('1008', '您已登录成功！'),
-('1009', '请选择已存在的项目'),
+('1009', '请选择已存在的项目！'),
 ('1010', '旧密码错误，请重新输入'),
 ('1011', '信息修改成功！'),
 ('2000', '上传文件参数错误'),
-('2001', '上传文件大小超过限制'),
-('2002', '文件上传成功'),
-('2003', '没有文件上传'),
+('2001', '上传文件大小超过限制！'),
+('2002', '文件上传成功！'),
+('2003', '没有文件上传！'),
 ('3000', '不正确的参数'),
-('3001', '您已成功添加项目'),
+('3001', '您已成功添加项目！'),
 ('4000', '不正确的参数'),
-('4001', '没有评审权限'),
+('4001', '没有评审权限！'),
 ('4002', '您已评审成功！'),
 ('503', 'Internal Server Error'),
-('6000', '下载文件参数错误'),
-('6001', '没有找到要下载的文件！');
+('6000', '下载文件参数错误！'),
+('6001', '没有找到要下载的文件！'),
+('7000', '缺少参数');
 
 -- --------------------------------------------------------
 
@@ -236,10 +248,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `password`, `role`, `project_id`, `name`, `email`, `phone_no`, `tutor_id`, `tutor_name`, `created_at`, `updated_at`, `photo_url`) VALUES
-(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员A', NULL, '18755554678', NULL, NULL, '2015-05-19 05:23:11', '2015-05-19 05:23:11', 'http://amui.qiniudn.com/bw-2014-06-19.jpg?imageView/1/w/1000/h/1000/q/80'),
+(1, 'admin', '$2y$10$GbWC3DvvdzPM1z8FdjYj3u76vBgH.98qOnDJKcQYYAJrvo9KMk4lG', 5, NULL, '系统管理员A', 'admin@ts.com', '13888667755', NULL, NULL, '2015-05-20 03:23:19', '2015-05-20 03:23:19', 'http://localhost/ts/public/uploads/admin/18843eeacba2c79edf5d3c9d9b5a3fdc.jpeg'),
 (2, 'eauditor', '$2y$10$RJWyzjauANVkZUUi7Pj3y.otrs5XpNI.b8tr91.vem30B4a3mcYqW', 4, 1, '外审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:17:32', '2015-05-12 07:17:32', NULL),
 (3, 'iauditor', '$2y$10$KLSt6I/6GkmvDSgJz/NZnuue/EVVFiqSxSYdijOqkasPN2rqF.I8u', 3, 1, '内审员A', NULL, NULL, NULL, NULL, '2015-05-12 07:18:02', '2015-05-12 07:18:02', NULL),
-(4, 'tutor', '$2y$10$UQHaGsU4ON3QXsJyn.mmfOEWMstaGRKBG/AsK.Sp8T0Y3NtJ7E7ba', 2, 1, '评估师A', NULL, NULL, 3, '内审员A', '2015-05-12 07:19:02', '2015-05-12 07:19:02', NULL),
+(4, 'tutor', '$2y$10$UQHaGsU4ON3QXsJyn.mmfOEWMstaGRKBG/AsK.Sp8T0Y3NtJ7E7ba', 2, 1, '评估师A', NULL, NULL, 3, '内审员A', '2015-05-20 03:29:34', '2015-05-20 03:29:34', 'http://localhost/ts/public/uploads/tutor/8bc67c21790b63db807b3ae5485b27c2.jpg'),
 (5, 'st', '$2y$10$f1RP1/ieAS/fHyMhDysMceE6MXDYQUcGhor1LYmwUV3BEM31w.FSC', 1, 1, '学徒A', NULL, NULL, 4, '评估师A', '2015-05-12 07:22:46', '2015-05-13 05:25:10', NULL),
 (6, 'tutorB', '$2y$10$MkONrBHE2.MRS/99oLtfQePjE3idnCwSYHXRUTxje9Uz612UAhPjm', 1, 1, '导师B', NULL, NULL, 3, '内审员A', '2015-05-12 07:23:32', '2015-05-12 07:23:32', NULL);
 

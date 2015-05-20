@@ -26,6 +26,7 @@ Route::group(array('before' => 'signed'), function () {
 
 Route::get('login', 'UserController@loginView');
 Route::get('login/check', 'UserController@login');
+Route::get('statusinfo/get','StatusInfoController@get');
 Route::get('/hello', function() {
     return View::make('hello');
 });

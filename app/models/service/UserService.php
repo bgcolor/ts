@@ -180,7 +180,7 @@ class UserService extends Service {
         return $user_arr;
     }
 
-    public function update($params) {
+    public static function update($params) {
         if (!Util::validate($params,array(
                 'id' => 'required',
             ))) {

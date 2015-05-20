@@ -23,7 +23,7 @@
               </div>
             </form>
             <form style="display:none" id="update-photo">
-              <input type="text" name="user_id" value="{{ $user['name'] }}">
+              <input type="text" name="id" value="{{ $user['id'] }}">
               <input type="text" name="photo_url">
             </form>
           </div>
@@ -40,7 +40,7 @@
           <?php
               if (isset($user['evaluation'])) {
           ?>
-          <div class="am-progress am-progress-sm">
+          <div class="am-progress am-progress-striped am-progress-sm am-active">
             <div class="am-progress-bar" style="width: {{ $user['evaluation']->progress }}%"></div>
           </div>
           <p class="user-info-order"><strong>完成进度：</strong>{{ $user['evaluation']->progress }}%</p>
@@ -160,7 +160,7 @@
       </div>
       <div class="am-form-group">
         <div class="am-u-sm-9 am-u-sm-push-2">
-          <button type="button" class="am-btn am-btn-primary" id="profile-btn">保存修改</button>
+          <button type="button" class="am-btn am-btn-primary" id="profile-btn" data-id="{{ $user['id'] }}">保存修改</button>
         </div>
       </div>
     </form>

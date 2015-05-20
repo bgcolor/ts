@@ -31,7 +31,7 @@
     <div class="am-panel am-panel-default admin-sidebar-panel">
       <div class="am-panel-bd">
         <p><span class="am-icon-bookmark"></span> 公告</p>
-        <p>如对系统使用有疑问请咨询系统管理员，联系方式：xxx@xx.com</p>
+        <p>{{ $public_msg }}</p>
       </div>
     </div>
   </div>
