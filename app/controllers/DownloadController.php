@@ -4,7 +4,7 @@ class DownloadController extends BaseController {
     public function download_only() {
         $res = false;
         try {
-            $res = DownloadService::download_only(Input::all());
+            return $res = DownloadService::download_only(Input::all());
         } catch (Exception $e) {
             return Util::response_error_msg('503');
         }
@@ -16,6 +16,7 @@ class DownloadController extends BaseController {
         try {
             return DownloadService::download_and_process(Input::all());
         } catch (Exception $e) {
+            echo $e->getMessage();
             return Util::response_error_msg($e->getMessage());
         }
     }

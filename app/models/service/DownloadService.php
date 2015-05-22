@@ -1,7 +1,7 @@
 <?php 
 class DownloadService extends Service {
 
-	public function download_only($params) {
+	public static function download_only($params) {
 		if ( !Util::validate(
                 $params,
                 array(
@@ -13,7 +13,7 @@ class DownloadService extends Service {
         return Response::download(Input::get('pathname'));
 	}
 
-	public function download_and_process($params) {
+	public static function download_and_process($params) {
 		if ( !Util::validate(
                 $params,
                 array(
@@ -24,7 +24,7 @@ class DownloadService extends Service {
             throw new Exception('6000'); 
         }
 
-        $file = File::find($params['file_id']);
+        $file = FileModel::find($params['file_id']);
         $downloader = User::find($params['downloader_id']);
         
         if (!$file || !$downloader) {
@@ -37,19 +37,26 @@ class DownloadService extends Service {
             throw new Exception('503');
         }
 
+        $download = Download::whereRaw('file_id = ? and downloader_id = ?',array($params['file_id'], $params['downloader_id']))->first();
+
+        if ($download) {
+            $download->touch();
+            return Response::download($file->pathname);
+        }
+
         $download = new Download();
         $download->file_id = $params['file_id'];
         $download->owner_id = $owner->id;
         $download->owner_name = $owner->name;
         $download->pathname = $file->pathname;
         $download->filename = $file->filename;
-        $download->downloader_id = $download->id;
-        $download->downloader_name = $download->name;
-        
+        $download->downloader_id = $downloader->id;
+        $download->downloader_name = $downloader->name; 
+
         if ($download->save()) {
         	return Response::download($file->pathname);
+        } else {
+            return Util::response_error_msg('6001');
         }
-
-        return Util::response_error_msg('6001');
 	}
 }

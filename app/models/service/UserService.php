@@ -177,6 +177,7 @@ class UserService extends Service {
             $user_arr['tutor'] = $tutor;
         }
 
+
         return $user_arr;
     }
 
@@ -202,5 +203,55 @@ class UserService extends Service {
         }
 
         return $user->save() ? true : false;
+    }
+
+    public static function get_uploads($id) {
+        $uploads = FileModel::where('user_id', '=', $id)->orderBy('created_at', 'desc')->paginate(Util::$pagination);
+
+        if ($uploads) {
+            foreach ($uploads as $upload) {
+                $user = User::find($upload->user_id);
+                $upload->user_name = $user->name;
+
+                $downloaders = Download::where('file_id','=',$upload->id)->get();
+                if ($downloaders) {
+                    $upload->downloaders = $downloaders;
+                }
+            }
+        }
+
+        return $uploads;
+    }
+
+    public static function get_uploads_with_querystring($id, $q) {
+        $uploads = FileModel::where('user_id', '=', $id)->where('filename', 'like', '%'.$q.'%')->orderBy('created_at', 'desc')->paginate(Util::$pagination);
+
+         if ($uploads) {
+            foreach ($uploads as $upload) {
+                $user = User::find($upload->user_id);
+                $upload->user_name = $user->name;
+
+                $downloaders = Download::where('file_id','=',$upload->id)->get();
+                if ($downloaders) {
+                    $upload->downloaders = $downloaders;
+                }
+            }
+        }
+
+        return $uploads;
+    }
+
+    public static function get_downloads($id) {
+        $user =  User::find($id);
+        if (!$user) {
+            throw new Exception('1000');
+        }
+
+        $tutor = User::find($user->tutor_id);
+        if(!$tutor) {
+            return array();
+        }
+
+        
     }
 }

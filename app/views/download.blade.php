@@ -14,15 +14,6 @@
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
     <link rel="stylesheet" href="assets/css/amazeui.min.css"/>
     <link rel="stylesheet" href="assets/css/admin.css">
-    <style>
-    .user-link-x {
-    display: inline-block;
-    padding-top: .6em;
-    }
-    .user-link-s {
-    display: inline-block;
-    }
-    </style>
   </head>
   <body>
     <!--[if lte IE 9]>
@@ -38,21 +29,25 @@
     <!-- content start -->
     <div class="admin-content">
       <div class="am-cf am-padding">
-        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">我的上传</strong> / <small>Upload</small></div>
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">我的下载</strong> / <small>Download</small></div>
       </div>
       
       <form action="" class="am-form am-form-inline am-margin-horizontal am-margin-vertical">
         <div class="am-form-group am-form-icon">
           <i class="am-icon-search"></i>
-          <input type="text" class="am-form-field" placeholder="查询文件名">
+          <input type="text" class="am-form-field" placeholder="查询文件名" id="query-btn">
         </div>
 
         <div class="am-form-group">
-          <button class="am-btn am-btn-default">
+          <button type="button" class="am-btn am-btn-default" name="q">
             查询
           </button>
         </div>
       </form>
+      
+      <!-- downloads start -->
+      @include('_downlaod_list')
+      <!-- downloads end -->
     </div>
     <!-- content end -->
     
@@ -74,9 +69,7 @@
     <script src="assets/js/common.js"></script>
     <!--<![endif]-->
     <script>
-    (function(){
 
-    })();
     
     </script>
   </body>

@@ -14,17 +14,9 @@
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
     <link rel="stylesheet" href="assets/css/amazeui.min.css"/>
     <link rel="stylesheet" href="assets/css/admin.css">
-    <style>
-    .user-link-x {
-    display: inline-block;
-    padding-top: .6em;
-    }
-    .user-link-s {
-    display: inline-block;
-    }
-    </style>
   </head>
   <body>
+  <div id="data" data-maxsize="{{ $post_max_size }}" data-msgabovemax="{{ $msg_above_max }}"></div>
     <!--[if lte IE 9]>
     <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
@@ -100,19 +92,30 @@
         var len = value.length;
         var filename = value[len - 1];
         var point = $("#upload-photo p");
-        var panel = '<div class="am-panel am-panel-default"><div class="am-panel-bd"><small>' + filename + '</small><a href="javascript:;" class="am-close">&times;</a><div class="am-progress am-progress-xs am-progress-striped am-active" style="margin-bottom: 0;margin-top: .6rem"><div class="am-progress-bar am-progress-bar-secondary"  style="width: 0%"></div></div></div>';
+        var panel = '<div class="am-panel am-panel-default"><div class="am-panel-bd"><small>' + filename + ' </small><a href="javascript:;" class="am-close">&times;</a><div class="am-progress am-progress-xs am-progress-striped am-active" style="margin-bottom: 0;margin-top: .6rem"><div class="am-progress-bar am-progress-bar-secondary"  style="width: 0%"></div></div></div>';
         log(filename);
 
         $("#upload-photo").ajaxSubmit({
           url: window.baseUrl + 'upload/only',
           type: 'post',
-          beforeSend: function(xhr) {
+          beforeSubmit: function(xhr) {
               var percentVal = '0%';
+              var maxSize = $("#data").attr("data-maxsize");
+              var msgAboveMax = $("#data").attr("data-msgabovemax");
+              
+              if (maxSize < $("[name=userfile]")[0].files[0].size) {
+                $.modalAlert({
+                  type: 'danger',
+                  message: msgAboveMax
+                });
+                $("#upload-photo .am-panel").remove();
+                return false;
+              }
               
               $("#upload-photo .am-panel").remove();
               point.after(panel);
 
-              $(".am-close").on("click", function(){
+              $(document).on("click",".am-close", function(){
                 xhr.abort();
                 // log('abort');
                 $("#upload-photo .am-panel").remove();
@@ -126,7 +129,7 @@
               });
           },
           success: function(responseText, statusText, xhr, $form) {
-            // log('success');
+            log('success');
             if (responseText.status == 'success') {
               $("#update-photo [name=photo_url]").val(window.baseUrl + responseText.data);
               $("#photo-image").attr("src",window.baseUrl + responseText.data);
@@ -135,33 +138,16 @@
                 width: '100%'
               });
 
-              $.myModal({
+              $.modalAlert({
                 message: responseText.message
               });
             } else {
               if (responseText.message) {
-                $.myModal({
+                $.modalAlert({
                   type: 'warning',
                   message: responseText.message
                 });
               }
-            }
-          },
-          complete: function(xhr) {
-            if (xhr.responseText.indexOf('error') != -1) {
-              $.ajax({
-                url: window.baseUrl + 'statusinfo/get',
-                data: { status_code: '2001' },
-                success: function(data) {
-                  // log(data);
-                  $.myModal({
-                    type: 'warning',
-                    message: data.data,
-                  });
-                }
-              });
-
-              $("#upload-photo .am-panel").remove();
             }
           }
         });
@@ -174,15 +160,16 @@
         $theForm.ajaxSubmit({
           url: window.baseUrl + 'user/update',
           type: 'post',
-          beforeSend: function(xhr) {
+          beforeSubmit: function(xhr) {
             if ($("#update-photo [name=photo_url]").val().trim() == '') {
+              $.popupInfo('2005');
               return false;
             }
           },
           success: function(responseText, statusText, xhr, $form) {
             // log('success');
             if (responseText.status) {
-              $.myModal({
+              $.modalAlert({
                 type: responseText.status == 'success' ? 'info' : 'danger', 
                 message: responseText.message
               });
@@ -205,7 +192,7 @@
           success: function(data) {
             log(data);
             if (data.status) {
-              $.myModal({
+              $.modalAlert({
                 type: data.status == 'success' ? 'info' : 'danger', 
                 message: data.message
               });

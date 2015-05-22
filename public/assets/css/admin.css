@@ -319,3 +319,20 @@ gallery.html css
   width: 200px;
   margin: 0 auto;
 }
+
+#data {
+  display: none;
+}
+
+.upload-panel {
+  margin-top: 1.5rem;
+  margin-left: 1.5rem;
+}
+
+.user-link-x {
+  display: inline-block;
+  padding-top: .6em;
+}
+.user-link-s {
+  display: inline-block;
+}

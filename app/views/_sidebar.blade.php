@@ -3,7 +3,7 @@
     <ul class="am-list admin-sidebar-list">
       <li><a href="admin/index" class="am-cf">您好，{{{ $username }}}</a></li>
       <?php if ($my_profile === true) { ?>
-        <li><a href="/" class="am-cf"><span class="am-icon-user"></span> 我的信息</a></li>
+        <li><a href="{{ URL::to('/') }}" class="am-cf"><span class="am-icon-user"></span> 我的信息</a></li>
       <?php } ?>
       <?php if ($my_tutor === true) { ?>
       <li><a href="admin/tutor"><span class="am-icon-mortar-board"></span> 我的导师</a></li>
@@ -12,10 +12,10 @@
       <li><a href="admin/tutor"><span class="am-icon-book"></span> 我的学徒</a></li>
       <?php } ?>
       <?php if ($my_download === true) { ?>
-      <li><a href="admin/download"><span class="am-icon-download"></span> 我的下载</a></li>
+      <li><a href="{{ URL::to('download') }}"><span class="am-icon-download"></span> 我的下载</a></li>
       <?php } ?>
       <?php if ($my_upload === true) { ?>
-      <li><a href="admin/upload"><span class="am-icon-upload"></span> 我的上传</a></li>
+      <li><a href="{{ URL::to('upload') }}"><span class="am-icon-upload"></span> 我的上传</a></li>
       <?php } ?>
       <?php if ($create_user === true) { ?>
       <li><a href="admin/upload"><span class="am-icon-user-plus"></span> 添加用户</a></li>

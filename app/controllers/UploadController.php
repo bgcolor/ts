@@ -9,11 +9,7 @@ class UploadController extends BaseController {
         try {
             $pathname = UploadService::upload_only($file);
         } catch (Exception $e) {
-            return Response::json(array(
-                'status' => 'fail',
-                'errorCode' => '2001',
-                'message' => StatusInfoService::get_description('2001')
-            ));
+            return Util::response_error_msg($e->getMessage());
         }
 
         if ($pathname) {
@@ -38,7 +34,7 @@ class UploadController extends BaseController {
         try {
             $res = UploadService::upload_and_process($file, Input::except('userfile'));
         } catch (Exception $e) {
-            Util::response_error_msg($e->getMessage());
+            return Util::response_error_msg($e->getMessage());
         }
 
         if ($res === true) {
@@ -53,4 +49,24 @@ class UploadController extends BaseController {
 
     return Util::response_error_msg('2003');
   }
+
+  public function delete() {
+    $res = false;
+    try {
+        $res = UploadService::delete(Input::all());
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        return Util::response_error_msg('2006');
+    }
+
+    if ($res === true) {
+       return Response::json(array(
+            'status' => 'success',
+            'message' => StatusInfoService::get_description('2007')
+        )); 
+    } else {
+        return Util::response_error_msg('503');
+    }
+  }
+  
 }

@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'default' => 'mysqli',
+	'default' => 'mysql',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return array(
 			'prefix'   => '',
 		),
 
-		'mysqli' => array(
+		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
 			'database'  => 'ts',

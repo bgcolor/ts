@@ -59,7 +59,7 @@ class Util {
         return $date_str.$suffix;
     }
 
-    public static $pagination = 15;
+    public static $pagination = 10;
 
     public static function response_error_msg($msg){
         $desp = StatusInfoService::get_description($msg);
