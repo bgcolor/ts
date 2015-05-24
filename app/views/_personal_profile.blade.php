@@ -134,7 +134,9 @@
       <?php 
           }
         } else {
-          echo $no_students;
+      ?>
+      <p class="user-link-x">{{ $no_students }}</p>
+      <?php
         }
       ?>
 

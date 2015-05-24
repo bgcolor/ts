@@ -99,4 +99,40 @@ class UserController extends BaseController {
         }
     }
 
+    public function delete() {
+        $res = false;
+        try {
+            $res = UserService::delete(Input::all());   
+        } catch(Exception $e) {
+            return Util::response_error_msg($e->getMessage());
+        }
+
+        if ($res === true) {
+            return Response::json(array(
+                'status' => 'success',
+                'message' => StatusInfoService::get_description('1019')
+            ));
+        } else {
+            return Util::response_error_msg('503');
+        }
+    }
+
+    public function resetPassword() {
+        $res = false;
+        try {
+            $res = UserService::reset_password(Input::all());   
+        } catch(Exception $e) {
+            return Util::response_error_msg($e->getMessage());
+        }
+
+        if ($res === true) {
+            return Response::json(array(
+                'status' => 'success',
+                'message' => StatusInfoService::get_description('1013')
+            ));
+        } else {
+            return Util::response_error_msg('503');
+        }
+    }
+
 }

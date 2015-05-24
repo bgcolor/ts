@@ -334,7 +334,7 @@ class ViewController extends BaseController {
         $type = Input::get('type');
 
         if (1 == $type) {
-            $users = User::find($self->tutor_id);
+            $users = array(User::find($self->tutor_id));
         }
 
         if (2 == $type) {
@@ -342,15 +342,43 @@ class ViewController extends BaseController {
         }
 
         if (3 == $type) {
-            $users = User::where('project_id','=',$self->projects)->get();
+            if (Input::has('q')) {
+                $users = User::where('project_id','=',$self->project_id)->whereRaw('name like "%'.Input::get('q').'%"')->get();
+            } else {
+                $users = User::where('project_id','=',$self->project_id)->get();
+            }
+            
         }
 
         if (4 == $type) {
-            $users = User::all();
+            if (Input::has('q')) {
+                $users = User::whereRaw('name like "%'.Input::get('q').'%"')->get();
+            } else {
+                $users = User::all();
+            } 
         }
+
+        if (isset($users) && count($users)) {
+            foreach ($users as $user) {
+                // $evaluation = Evaluation::where('user_id','=',$user->id)->first();
+                $evaluation = Evaluation::find($user->id);
+                $project = project::find($user->project_id);
+                $students = User::where('tutor_id','=',$user->id)->get();
+                
+                $user->evaluation = $evaluation;
+                $user->project = $project; 
+                
+                if (count($students)) {
+                    $user->students = $students;
+                }   
+            }
+        }
+
+        
 
         $page_variable = array(
             'list_title' => ConstantStringService::get('list_title'),
+            'no_students' => ConstantStringService::get('no_students'),
             'username' => Session::get('username'),
             'user_id' => $user_id,
             'users' => $users,
@@ -358,6 +386,8 @@ class ViewController extends BaseController {
             'user_fail' => StatusInfoService::get_description('1016'),
             'chose_tutor' => StatusInfoService::get_description('1001'),
             'public_msg' => ConstantStringService::get('public_msg'),
+            'msg_delete' => StatusInfoService::get_description('1017'),
+            'msg_reset' => StatusInfoService::get_description('1018'),
             'system_title' => ConstantStringService::get('system_title'),
             'system_sub_title' => ConstantStringService::get('system_sub_title'),
             'powered_by' => ConstantStringService::get('powered_by')
@@ -373,6 +403,7 @@ class ViewController extends BaseController {
             'create_user',
             'create_project',
             'change_pass',
+            'change_others_pass',
             'manage_files',
             'project_users',
             'all_users',

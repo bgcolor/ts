@@ -37,13 +37,32 @@ class UserService extends Service {
 
         //register login time
         $user->touch();
+        self::compose_session($user);
+        
+        return true;
+    }
 
+    public static function compose_session($user) {
         //make user session
         Session::put('username',$user->username);
         Session::put('uid',$user->id);
         Session::put('uname',$user->name);
         Session::put('role',$user->role);
-        return true;
+
+        $status_infos = StatusInfo::all();
+        foreach ($status_infos as $si) {
+            Session::put($si->status_code, $si->description);
+        }
+
+        $constant_strings = ConstantString::all();
+        foreach ($constant_strings as $cs) {
+            Session::put($cs->id, $cs->value);
+        }
+
+        $authorities = Authority::all();
+        foreach ($authorities as $a) {
+            Session::put($a->id.'-'.$a->role, $a->description);
+        }
     }
 
     public static function logout() {
@@ -158,6 +177,25 @@ class UserService extends Service {
         } else {
             throw new Exception('1010');
         }
+
+    }
+
+    public static function reset_password($params) {
+        //validate
+        if (!Util::validate($params,array(
+                'id' => 'required',
+            ))) {
+            throw new Exception('1000');
+        }
+
+        if (!AuthService::find('change_others_pass')) {
+            throw new Exception('0001');
+        }
+
+        $user = User::find($params['id']);
+
+        $user->password = Hash::make(ConstantStringService::get('default_password')); 
+        return $user->save() ? true : false;
 
     }
 
@@ -530,5 +568,48 @@ class UserService extends Service {
         }
         
         return $downloads;
+    }
+
+    public static function delete($params) {
+        if (!Util::validate($params,array(
+                'id' => 'required',
+            ))) {
+            throw new Exception('1000');
+        }
+
+        if (!AuthService::find('change_pass')) {
+            throw new Exception('0001');
+        }
+
+        $user = User::find($params['id']);
+        if (!$user) {
+            throw new Exception('1000');
+        }
+
+        $downloaders = Download::whereRaw('downloader_id = ? or owner_id = ?',array($user->id, $user->id));
+        $uploads = FileModel::where("user_id",'=',$user->id);
+        $evaluation = Evaluation::find($user->id);
+        $files = $uploads->get();
+
+        DB::transaction(function() use ($user,$downloaders,$uploads,$evaluation)
+        {
+            $uploads->delete();
+
+            if (isset($evaluation)) {
+                $evaluation->delete();
+            }
+
+            $downloaders->delete();
+
+            $user->delete();
+        });
+
+        if(isset($files)) {
+            foreach ($files as $f) {
+                unlink($f->pathname);
+            }
+        }
+
+        return true;
     }
 }

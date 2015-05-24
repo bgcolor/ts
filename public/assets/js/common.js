@@ -131,7 +131,7 @@ function getStatusInfo(str) {
 
 $(function(){
     $(document).on("click", ".user-link", function(){
-        var id = $(this).attr("data-id");
+        var id = $(this).attr("data-id") || $(this).parent().attr("data-id");
         location.href = window.baseUrl + 'user?id=' + id;
     });
 });

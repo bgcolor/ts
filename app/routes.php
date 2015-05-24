@@ -36,8 +36,10 @@ Route::group(array('before' => 'signed'), function () {
     Route::get('download/process', 'DownloadController@download_and_process');
 
     Route::post('file/delete', 'UploadController@delete');
+    Route::post('user/delete', 'UserController@delete');
     
     Route::post('user/password/change', 'UserController@changePassword');
+    Route::post('user/password/reset', 'UserController@resetPassword');
 });
 
 Route::get('login', 'UserController@loginView');
