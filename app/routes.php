@@ -16,7 +16,14 @@ Route::group(array('before' => 'signed'), function () {
     Route::get('/', 'ViewController@index');
     Route::get('download', 'ViewController@download');
     Route::get('upload', 'ViewController@upload');
+    Route::get('changepass', 'ViewController@changePassword');
+    Route::get('createproject', 'ViewController@createProject');
+    Route::get('createuser', 'ViewController@createUser');
+    Route::get('user', 'ViewController@someone');
+    Route::get('userlist', 'ViewController@userList');
+    Route::get('evaluate', 'ViewController@evaluate');
 
+    Route::post('evaluate/create', 'EvaluationController@create');
     Route::post('project/create', 'ProjectController@create');
     Route::get('logout', 'UserController@logout');
     Route::post('user/create', 'UserController@create');
@@ -30,7 +37,7 @@ Route::group(array('before' => 'signed'), function () {
 
     Route::post('file/delete', 'UploadController@delete');
     
-    Route::get('user/password/change', 'UserController@changePassword');
+    Route::post('user/password/change', 'UserController@changePassword');
 });
 
 Route::get('login', 'UserController@loginView');

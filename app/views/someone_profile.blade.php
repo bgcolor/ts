@@ -30,20 +30,20 @@
     <!-- content start -->
     <div class="admin-content">
       <!-- profile start -->
-      @include('_personal_profile')
+      @include('_someone_profile')
       
       <!-- profile end -->
 
       <!-- download start -->
-      @include('_personal_download')
+      @include('_someone_download')
       <!-- download end -->
 
       <!-- upload start -->
-      @include('_personal_upload')
+      @include('_someone_upload')
       <!-- upload end -->
       
       <!-- progress start  -->
-      @include('_personal_students')
+      @include('_someone_students')
       <!-- progress end  -->
     </div>
     <!-- content end -->
@@ -229,6 +229,10 @@
             },
             message: $("#data").attr("data-msg-delete")
           });
+        });
+
+        $(".evaluate").on("click",function(){
+          location.href = window.baseUrl + 'evaluate?id=' + $(this).attr("data-id");
         });
 
     })();

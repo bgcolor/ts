@@ -336,3 +336,7 @@ gallery.html css
 .user-link-s {
   display: inline-block;
 }
+
+.admin-content {
+  min-height: 600px;
+}

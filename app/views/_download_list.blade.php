@@ -12,45 +12,50 @@
           <?php
           if (!isset($downloads) || !count($downloads)) {
           ?>
-          <tr><td colspan="5">{{ $no_downloads }}</td></tr>
+          <tr><td colspan="6">{{ $no_downloads }}</td></tr>
           <?php
           } else {
             foreach($downloads as $download) {
           ?>
           <tr>
-            <td>$download->filename</td>
-            <td><a href="javascript:;" data-am-popover="{content: '您在2015/08/15 16:53时下载', trigger: 'hover focus'}">已下载</a></td>
-            <td><a href="javascript:;" data-am-popover="{content: 'xxx，xxx等人已下载', trigger: 'hover focus'}">5</a></td>
-            <td><a href="javascript:;">xxx</a></td>
-            <td class="am-hide-sm-only">2014年9月4日 7:28:47</td>
+            <td>{{ $download->filename }}</td>
+            <td><?php if (!isset($download->my_record) || !count($download->my_record) ) { ?>未下载<?php } else { ?><a href="javascript:;" data-am-popover="{content: '您在{{ $download->my_record->updated_at }}时下载', trigger: 'hover focus'}">已下载</a><?php } ?></td>
+            <td><a href="javascript:;" <?php if (!isset($download->downloaders) || !count($download->downloaders) ) { echo '>0'; } else { ?> data-am-popover="{content: '<?php 
+              foreach($download->downloaders as $k => $v) {
+                if ($k != 0) {
+                  echo '，';
+                }
+                echo $v;
+              }
+            ?>等人已下载', trigger: 'hover focus'}">{{ count($download->downloaders) }} <?php } ?></a></td>
+            <td><a data-id="{{ $download->user->id }}" class="user-link" href="javascript:;">{{ $download->user->name }}</a></td>
+            <td class="am-hide-sm-only">{{ $download->updated_at }}</td>
             <td>
-              <div class="am-btn-toolbar">
+              <div class="am-btn-toolbar" data-file-id="{{ $download->id }}" data-user-id="{{ $user_id }}">
                 <div class="am-btn-group am-btn-group-xs">
-                  <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-download"></span> 下载</button>
-                  <!-- <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button> -->
-                  <!-- <button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button> -->
-                  <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>
+                  <?php 
+                  if ($downloads_download === true) {
+                  ?>
+
+                  <button type="button" class="am-btn am-btn-default am-btn-xs am-text-secondary download"><span class="am-icon-download"></span> 下载</button>
+
+                  <?php
+                  } 
+                  if ($downloads_delete === true) {
+                  ?>
+
+                  <button type="button" class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only delete"><span class="am-icon-trash-o"></span> 删除</button>
+
+                  <?php
+                  }
+                  ?>
                 </div>
               </div>
             </td>
           </tr>
-          <tr>
-            <td>文件1.doc</td>
-            <td>未下载</td>
-            <td><a href="javascript:;" data-am-popover="{content: 'xxx，xxx等人已下载', trigger: 'hover focus'}">5</a></td>
-            <td><a href="javascript:;">xxx</a></td>
-            <td class="am-hide-sm-only">2014年9月4日 7:28:47</td>
-            <td>
-              <div class="am-btn-toolbar">
-                <div class="am-btn-group am-btn-group-xs">
-                  <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-download"></span> 下载</button>
-                  <!-- <button class="am-btn am-btn-default am-btn-xs am-text-secondary"><span class="am-icon-pencil-square-o"></span> 编辑</button> -->
-                  <!-- <button class="am-btn am-btn-default am-btn-xs am-hide-sm-only"><span class="am-icon-copy"></span> 复制</button> -->
-                  <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only"><span class="am-icon-trash-o"></span> 删除</button>
-                </div>
-              </div>
-            </td>
-          </tr>
+          <?php 
+            }
+          } ?>
           <!-- tbody end -->
         </tbody>
       </table>

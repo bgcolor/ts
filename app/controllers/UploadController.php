@@ -23,7 +23,7 @@ class UploadController extends BaseController {
         }    
     }
 
-    return Util::response_error_msg('2003');
+    return Util::response_error_msg('2001');
   }
 
   public function upload_and_process() {
@@ -47,7 +47,7 @@ class UploadController extends BaseController {
         }
     }
 
-    return Util::response_error_msg('2003');
+    return Util::response_error_msg('2001');
   }
 
   public function delete() {

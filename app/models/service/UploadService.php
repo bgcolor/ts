@@ -26,16 +26,18 @@ class UploadService extends Service {
     public static function process($file) {
     	$username = Session::get('username');
         // $filname = Util::gen_file_name('.'.$file->getClientOriginalExtension());
-        $filname = $file->getClientOriginalName();
+        // $filname = iconv("gb2312", "utf-8", $file->getClientOriginalName());
+        $filename = $file->getClientOriginalName();
+
         
-        $pathname = 'uploads/'.$username.'/'.$filname;
+        $pathname = 'uploads/'.$username.'/'.$filename;
         $existFile = FileModel::whereRaw('pathname = ?',array($pathname))->first();
         if ($existFile) {
             throw new Exception('2004');
         }
 
-        $file->move('uploads/'.$username,$filname);
-        return $filname;
+        $file->move('uploads/'.$username,iconv("utf-8", Util::$localCharset, $filename));
+        return $filename;
     }
 
     public static function before_upload($params) {
@@ -84,7 +86,7 @@ class UploadService extends Service {
             $pathname = $file->pathname;
             $file->delete();
             Download::where('file_id','=',$params['id'])->delete();
-            unlink(URL::to('/').'/'.$pathname);
+            unlink($pathname);
         });
 
         return true;

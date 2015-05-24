@@ -92,7 +92,7 @@ class UserController extends BaseController {
         if ($res === true) {
             return Response::json(array(
                 'status' => 'success',
-                'message' => StatusInfoService::get_description('1011')
+                'message' => StatusInfoService::get_description('1013')
             ));
         } else {
             return Util::response_error_msg('503');

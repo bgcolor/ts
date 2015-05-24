@@ -51,9 +51,9 @@
           <div class="am-btn-toolbar">
             <div class="am-btn-group am-btn-group-xs">
               <label type="button" class="am-btn am-btn-default" for="userfile"><span class="am-icon-plus"></span> 上传</label>
-              <form enctype="multipart/form-data" method="POST" style="display: none" id="upload-form">
+              <form style="display: none" id="upload-form">
                 <!-- MAX_FILE_SIZE must precede the file input field -->
-                <input type="hidden" name="MAX_FILE_SIZE" value="30000" />
+                <!-- <input type="hidden" name="MAX_FILE_SIZE" value="30000" /> -->
                 <!-- Name of input element determines name in $_FILES array -->
                 <input id="userfile" name="userfile" type="file" />
                 <input type="text" name="id" value="{{ $user_id }}">
@@ -105,7 +105,7 @@
         $("#upload-form").ajaxSubmit({
           url: window.baseUrl + 'upload/process',
           type: 'post',
-          beforeSubmit: function(xhr) {
+          beforeSubmit: function() {
               var percentVal = '0%';
               var maxSize = $("#data").attr("data-maxsize");
               var msgAboveMax = $("#data").attr("data-msgabovemax");
@@ -122,11 +122,13 @@
               $(".admin-content .am-panel").remove();
               point.after(panel);
 
-              $(document).on("click",".am-close", function(){
-                xhr.abort();
-                // log('abort');
-                $(".admin-content .am-panel").remove();
-              });
+          },
+          beforeSend: function(xhr) {
+            $(document).on("click",".am-close", function(){
+              xhr.abort();
+              // log('abort');
+              $(".admin-content .am-panel").remove();
+            });
           },
           uploadProgress: function(event, position, total, percentComplete) {
               var percentVal = percentComplete + '%';
@@ -178,7 +180,7 @@
         if (q != '') {
           location.href = window.baseUrl + 'upload?q=' + encodeURI(q);
         } else {
-          location.reload();
+          location.href = window.baseUrl + 'upload';
         }
       });
 
@@ -187,7 +189,7 @@
         var fileId = $(this).closest(".am-btn-toolbar").attr("data-file-id");
 
         window.open(window.baseUrl + 'download/process?file_id=' + fileId + '&downloader_id=' + downloaderId,'_blank');
-        e.stoppropagation();
+        location.reload();
       });
 
       $(".delete").on("click",function(e){

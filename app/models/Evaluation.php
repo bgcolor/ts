@@ -15,5 +15,7 @@ class Evaluation extends Eloquent {
      */
     protected $hidden = array();
     protected $guarded = array();
+
+    public $primaryKey = 'user_id';
     
 }

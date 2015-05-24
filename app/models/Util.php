@@ -61,6 +61,8 @@ class Util {
 
     public static $pagination = 10;
 
+    public static $previewCount = 5;
+
     public static function response_error_msg($msg){
         $desp = StatusInfoService::get_description($msg);
         if ($desp) {
@@ -69,7 +71,11 @@ class Util {
                 'errorCode' => $msg,
                 'message' => $desp
             ));
+        } else {
+            echo $msg;
         }
     }
+
+    public static $localCharset = 'gb18030';
 
 }

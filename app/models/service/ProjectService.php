@@ -9,6 +9,11 @@ class ProjectService extends Service {
             throw new Exception('3000');
         }
 
+        $project = Project::where('name','=',$params['name'])->first();
+        if ($project) {
+            throw new Exception('3003');
+        }
+
         if (isset($params['creator_id'])) {
 
             $creator = User::find($params['creator_id']);

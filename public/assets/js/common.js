@@ -128,3 +128,10 @@ function getStatusInfo(str) {
         }
     });
 }
+
+$(function(){
+    $(document).on("click", ".user-link", function(){
+        var id = $(this).attr("data-id");
+        location.href = window.baseUrl + 'user?id=' + id;
+    });
+});

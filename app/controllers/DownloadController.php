@@ -16,7 +16,6 @@ class DownloadController extends BaseController {
         try {
             return DownloadService::download_and_process(Input::all());
         } catch (Exception $e) {
-            echo $e->getMessage();
             return Util::response_error_msg($e->getMessage());
         }
     }

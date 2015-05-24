@@ -6,7 +6,7 @@ class EvaluationController extends BaseController {
 		try {
 			$res = EvaluationService::create(Input::all());
 		} catch (Exception $e) {
-			Util::response_error_msg($e->getMessage());
+			return Util::response_error_msg($e->getMessage());
 		}
 
 		if ($res === true) {

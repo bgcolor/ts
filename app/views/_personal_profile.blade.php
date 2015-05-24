@@ -44,7 +44,7 @@
             <div class="am-progress-bar" style="width: {{ $user['evaluation']->progress }}%"></div>
           </div>
           <p class="user-info-order"><strong>完成进度：</strong>{{ $user['evaluation']->progress }}%</p>
-          <p class="user-info-order"><strong>评审人：</strong> <a href="javascript:;" class="user-link-s" data-id="$user['evaluation']->evaluator_id">{{ $user['evaluation']->evaluator_name }}</a></p>
+          <p class="user-info-order"><strong>评审人：</strong> <a href="javascript:;" class="user-link-s user-link" data-id="$user['evaluation']->evaluator_id">{{ $user['evaluation']->evaluator_name }}</a></p>
           <p class="user-info-order"><strong>评审进度描述：</strong> {{ $user['evaluation']->description }}
           </p>
           <?php
@@ -104,7 +104,7 @@
             <option value="o">Orange</option>
             <option value="m" selected>Mango</option>
           </select> -->
-          <a href="javascript:;" class="user-link-x" data-id="{{ $user['tutor']->id }}">{{ $user['tutor']->name }}</a>
+          <a href="javascript:;" class="user-link-x user-link" data-id="{{ $user['tutor']->id }}">{{ $user['tutor']->name }}</a>
       <?php 
         } else {
           echo $no_tutor;
@@ -130,7 +130,7 @@
         if (isset($user['students'])) {
           foreach($user['students'] as $student) {
       ?>
-      <a href="javascript:;" class="user-link-x" data-id="$student->id"><?php echo $student->name ?></a>
+      <a href="javascript:;" class="user-link-x user-link" data-id="{{ $student->id }}"><?php echo $student->name ?></a>
       <?php 
           }
         } else {

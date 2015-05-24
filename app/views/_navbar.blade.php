@@ -8,18 +8,7 @@
     <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list">
       <li class="am-dropdown" data-am-dropdown>
         <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
-          <span class="am-icon-users"></span> 您好， 
-          <?php 
-            $roleArr = array(
-              '学徒',
-              '评估师',
-              '内审员',
-              '外审员',
-              '系统管理员'
-            );
-            $role = Session::get('role'); 
-            echo $roleArr[$role - 1];
-          ?>
+          <span class="am-icon-users"></span> 您好， {{ $username }}
           <span class="am-icon-caret-down"></span>
         </a>
         <ul class="am-dropdown-content">
