@@ -21,7 +21,7 @@ if ($my_student) {
         <div class="am-progress-bar" style="width: {{ $s->evaluation->progress }}%"></div>
       </div>
       <p class="user-info-order"><strong>完成进度：</strong>{{ $s->evaluation->progress }}%</p>
-      <p class="user-info-order"><strong>评审人：</strong> <a href="javascript:;" class="user-link-s user-link" data-id="$s->evaluation->evaluator_id">{{ $s->evaluation->evaluator_name }}</a></p>
+      <p class="user-info-order"><strong>评审人：</strong> <a href="javascript:;" class="user-link-s user-link" data-id="{{ $s->evaluation->evaluator_id }}">{{ $s->evaluation->evaluator_name }}</a></p>
       <p class="user-info-order"><strong>评审进度描述：</strong> {{ $s->evaluation->description }}
       </p>
       <?php

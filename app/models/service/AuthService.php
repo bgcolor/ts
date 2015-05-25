@@ -13,8 +13,6 @@ class AuthService extends Service {
     }
 
     public static function find2($id,$role) {
-        $role = Session::get('role');
-        
         if (Session::has($id.'-'.$role)) {
             return true;
         }

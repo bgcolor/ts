@@ -302,11 +302,12 @@ class UserService extends Service {
 
         $has_progress = false;
         if (AuthService::find2('my_progress', $user->role)) {
-            $evaluation = Evaluation::whereRaw('user_id = ?', array($id))->first();
+            $evaluation = Evaluation::find($id);
             if ($evaluation) {
                 $user_arr['evaluation'] = $evaluation;
+                $has_progress = true;
             }
-            $has_progress = true;
+            
         }
         $user_arr['has_progress'] = $has_progress;
 
@@ -319,8 +320,9 @@ class UserService extends Service {
                 }
 
                 $user_arr['students'] = $students;
+                $has_students = true;
             }
-            $has_students = true;
+            
         }
         $user_arr['has_students'] = $has_students;
 

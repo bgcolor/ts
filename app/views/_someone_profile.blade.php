@@ -34,6 +34,22 @@
       }
       ?>
       
+      <div class="am-form-group">
+        <label for="user-email" class="am-u-sm-2 am-form-label">身份</label>
+        <div class="am-u-sm-9 am-u-end">
+          <input type="text" id="user-email" disabled value="<?php 
+            $roleArr = array(
+              '学徒',
+              '评估师',
+              '内审员',
+              '外审员',
+              '系统管理员'
+            );
+            $role = Session::get('role'); 
+            echo $roleArr[$user['role'] - 1];
+          ?>">
+        </div>
+      </div>
 
       <?php 
       if (isset($user['tutor'])) {

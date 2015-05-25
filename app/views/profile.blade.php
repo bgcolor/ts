@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="assets/css/admin.css">
   </head>
   <body>
-  <div id="data" data-maxsize="{{ $post_max_size }}" data-msgabovemax="{{ $msg_above_max }}"  data-msg-delete="{{ $msg_delete }}"></div>
+  <div id="data" data-maxsize="{{ $post_max_size }}" data-msgabovemax="{{ $msg_above_max }}"  data-msg-delete="{{ $msg_delete }}" data-msg-wrong-type="{{ $msg_wrong_type }}"></div>
     <!--[if lte IE 9]>
     <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
@@ -93,11 +93,21 @@
               var percentVal = '0%';
               var maxSize = $("#data").attr("data-maxsize");
               var msgAboveMax = $("#data").attr("data-msgabovemax");
+              var msgWrongType = $("#data").attr("data-msg-wrong-type");
               
               if (maxSize < $("[name=userfile]")[0].files[0].size) {
                 $.modalAlert({
                   type: 'danger',
                   message: msgAboveMax
+                });
+                $("#upload-photo .am-panel").remove();
+                return false;
+              }
+
+              if (!$("[name=userfile]")[0].files[0].name.split(".").pop().match(/jpg|gif|png|jpeg/i)) {
+                $.modalAlert({
+                  type: 'warning',
+                  message: msgWrongType
                 });
                 $("#upload-photo .am-panel").remove();
                 return false;

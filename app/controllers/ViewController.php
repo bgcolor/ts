@@ -18,6 +18,7 @@ class ViewController extends BaseController {
             'post_max_size' => ConstantStringService::get('post_max_size'),
             'msg_above_max' => StatusInfoService::get_description('2001'),
             'msg_delete' => StatusInfoService::get_description('2008'),
+            'msg_wrong_type' => StatusInfoService::get_description('2009'),
             'username' => Session::get('username'),
             'user_id' => $user_id,
             'user' => $user,
