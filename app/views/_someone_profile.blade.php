@@ -143,7 +143,7 @@
         ?>
 
         <?php 
-        if (true == $evaluate_others) {
+        if (true == $evaluate_others && true == $evaluate_btn) {
         ?>
 
         <button type="button" class="am-btn am-btn-primary am-btn-xs evaluate" data-id="{{ $user['id'] }}">评审</button>

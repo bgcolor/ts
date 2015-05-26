@@ -73,7 +73,7 @@ class DownloadService extends Service {
             //if (preg_match("/MSIE/", $ua)) {        
             //兼容IE11
             if(preg_match("/MSIE/", $ua) || preg_match("/Trident\/7.0/", $ua)){
-                header('Content-Disposition: attachment; filename="' . $encoded_filename . '"');
+                header('Content-Disposition: attachment; filename="' . $filename . '"');
             } else if (preg_match("/Firefox/", $ua)) {
                 header('Content-Disposition: attachment; filename*="utf8\'\'' . $filename . '"');
             } else {

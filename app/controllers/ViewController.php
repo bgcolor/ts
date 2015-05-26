@@ -52,7 +52,6 @@ class ViewController extends BaseController {
     public function download() {
 
         $user_id = Session::get('uid');
-        $downloads = UserService::get_downloads($user_id);
 
         if (Input::has('q')) {
             $downloads = UserService::get_downloads_with_querystring($user_id, Input::get('q'));
@@ -260,7 +259,8 @@ class ViewController extends BaseController {
             'user' => $user,
             'system_title' => ConstantStringService::get('system_title'),
             'system_sub_title' => ConstantStringService::get('system_sub_title'),
-            'powered_by' => ConstantStringService::get('powered_by')
+            'powered_by' => ConstantStringService::get('powered_by'),
+            'evaluate_btn' => EvaluationService::hasPower($user_id, Session::get('uid'))
         );
 
         $auth_variable = AuthService::compose_variable(array(

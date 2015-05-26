@@ -16,6 +16,7 @@ class EvaluationService extends Service {
 
         $user = User::find($params['user_id']);
         $self = User::find(Session::get('uid'));
+        $user_tutor = User::find($user->tutor_id);
 
         if (!$user) {
             throw new Exception('4000');
@@ -25,27 +26,39 @@ class EvaluationService extends Service {
             throw new Exception('4001');
         }
 
-		$evaluation =  Evaluation::whereRaw('user_id = ?', array($params['user_id']))->first();
-		
-        if (!$evaluation) {
-			$evaluation = new Evaluation;
-            $evaluation->user_id = $params['user_id'];
-		}
-
-        $creator = User::find($params['evaluator_id']);
+        if ($self->id == $user->tutor_id || (isset($user_tutor) && $user_tutor->tutor_id == $self->id)) {
+            $evaluation =  Evaluation::whereRaw('user_id = ?', array($params['user_id']))->first();
             
-        if (!$creator) {
-            throw new Exception('4000');
-        } 
+            if (!$evaluation) {
+                $evaluation = new Evaluation;
+                $evaluation->user_id = $params['user_id'];
+            }
 
-        if ($evaluation->evaluator_id != $params['evaluator_id']) {
-            $evaluation->evaluator_id = $params['evaluator_id'];
-            $evaluation->evaluator_name = $creator->name;
+            $creator = User::find($params['evaluator_id']);
+                
+            if (!$creator) {
+                throw new Exception('4000');
+            } 
 
+            if ($evaluation->evaluator_id != $params['evaluator_id']) {
+                $evaluation->evaluator_id = $params['evaluator_id'];
+                $evaluation->evaluator_name = $creator->name;
+
+            }
+
+            $evaluation->progress = $params['progress'];
+            $evaluation->description = $params['description'];
+            return $evaluation->save() ? true : false;
         }
 
-        $evaluation->progress = $params['progress'];
-        $evaluation->description = $params['description'];
-        return $evaluation->save() ? true : false;
+		throw new Exception('4001');
 	}
+
+    public static function hasPower($user_id, $self_id) {
+        $user = User::find($user_id);
+        $self = User::find($self_id);
+        $user_tutor = User::find($user->tutor_id);
+
+        return $self->id == $user->tutor_id || (isset($user_tutor) && $user_tutor->tutor_id == $self->id) ? true : false;
+    }
 }

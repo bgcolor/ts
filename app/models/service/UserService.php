@@ -305,9 +305,9 @@ class UserService extends Service {
             $evaluation = Evaluation::find($id);
             if ($evaluation) {
                 $user_arr['evaluation'] = $evaluation;
-                $has_progress = true;
+                
             }
-            
+            $has_progress = true;
         }
         $user_arr['has_progress'] = $has_progress;
 
@@ -320,9 +320,9 @@ class UserService extends Service {
                 }
 
                 $user_arr['students'] = $students;
-                $has_students = true;
+                
             }
-            
+            $has_students = true;
         }
         $user_arr['has_students'] = $has_students;
 
@@ -398,6 +398,10 @@ class UserService extends Service {
             }
 
             if ($self->tutor_id == $user->id) {
+                $can_download = true;
+            }
+
+            if ($self->id == $user->totor_id) {
                 $can_download = true;
             }
 
@@ -500,7 +504,21 @@ class UserService extends Service {
                 return array();
             }
 
-            $downloads = FileModel::where('user_id','=',$tutor->id)->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            $students = User::whereRaw('tutor_id = ?',array($user->id))->get();
+            
+            if (!$students) {
+                $downloads = FileModel::where('user_id','=',$tutor->id)->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            }
+
+            $ids = array();
+            if ($tutor) $ids[] = $tutor->id;
+            foreach ($students as $student) {
+                $ids[] = $student->id;
+            }
+
+            $downloads = FileModel::whereRaw('user_id in ('.implode(',', $ids).')')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+
+            
         }
 
         foreach ($downloads as $d) {
@@ -550,7 +568,19 @@ class UserService extends Service {
                 return array();
             }
 
-            $downloads = FileModel::where('user_id','=',$tutor->id)->where('filename', 'like', '%'.$q.'%')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            $students = User::whereRaw('tutor_id = ?',array($user->id))->get();
+            
+            if (!$students) {
+                $downloads = FileModel::where('user_id','=',$tutor->id)->where('filename', 'like', '%'.$q.'%')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            }
+
+            $ids = array();
+            if ($tutor) $ids[] = $tutor->id;
+            foreach ($students as $student) {
+                $ids[] = $student->id;
+            }
+
+            $downloads = FileModel::whereRaw('user_id in ('.implode(',', $ids).') and filename like "%'.$q.'%"')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
         }
 
         foreach ($downloads as $d) {
