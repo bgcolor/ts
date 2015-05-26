@@ -8,6 +8,7 @@ function log(msg) {
         // protocol = pathArray[0];
         // host = pathArray[2];
         // return protocol + '//' + host;
+        // return 'http://121.40.104.24:801';
         return 'http://localhost/ts/public/'
     }
 
@@ -60,12 +61,13 @@ $.extend({
 
         if (action == 'open') {
             // log($("#modal-alert").length);
-            if ($("#modal-confirm").length) {
-                $("#modal-confirm .am-modal-hd div:first").html(types[type] + title);
-                $("#modal-confirm .am-modal-bd").html(msg);
-                $("#modal-confirm").modal('open');
-                return;
-            }
+            // if ($("#modal-confirm").length) {
+            //     $("#modal-confirm .am-modal-hd div:first").html(types[type] + title);
+            //     $("#modal-confirm .am-modal-bd").html(msg);
+            //     $("#modal-confirm").modal('open');
+            //     return;
+            // }
+            $("#modal-confirm").remove();
 
             var modalBox = '<div id="modal-confirm" class="am-modal am-modal-confirm" tabindex="-1"><div class="am-modal-dialog"><div class="am-modal-hd"><div>' + types[type] + title + '</div><a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a></div><div class="am-modal-bd">' + msg + '</div><div class="am-modal-footer"><span class="am-modal-btn" data-am-modal-cancel>取消</span><span class="am-modal-btn" data-am-modal-confirm>确定</span></div></div></div>'
 
