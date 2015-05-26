@@ -338,5 +338,9 @@ gallery.html css
 }
 
 .admin-content {
-  min-height: 600px;
+  min-height: 800px;
+}
+
+.upload-file {
+  max-width: 100px;
 }

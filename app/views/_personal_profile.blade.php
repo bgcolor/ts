@@ -17,7 +17,7 @@
             <p>{{{ $photo_remark1 }}}</p>
             <form class="am-form" id="upload-photo" enctype="multipart/form-data">
               <div class="am-form-group">
-                <input type="file" id="user-pic" name="userfile">
+                <input type="file" id="user-pic" name="userfile" class="upload-file">
                 <p class="am-form-help">{{{ $photo_remark2 }}}</p>
                 <button type="button" class="am-btn am-btn-primary" id="update-photo-btn">保存</button>
               </div>
