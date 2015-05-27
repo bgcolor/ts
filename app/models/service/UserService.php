@@ -410,9 +410,6 @@ class UserService extends Service {
                 $can_download = true;
             }
 
-            // if ($role == 3 && $self->project_id == $user->project_id) {
-            //     $can_download = true;
-            // }
         }
 
         $user_arr['can_download'] = $can_download;
