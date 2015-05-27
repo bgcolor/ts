@@ -391,6 +391,7 @@ class UserService extends Service {
             $can_delete = true;
         } else {
             $self = User::find(Session::get('uid'));
+            $user_tutor = User::find($user->tutor_id);
 
             if ($self->id == $user->id) {
                 $can_download = true;
@@ -401,13 +402,17 @@ class UserService extends Service {
                 $can_download = true;
             }
 
-            if ($self->id == $user->totor_id) {
+            if ($self->id == $user->tutor_id) {
                 $can_download = true;
             }
 
-            if ($role == 3 && $self->project_id == $user->project_id) {
+            if (isset($user_tutor) && $self->id == $user_tutor->tutor_id) {
                 $can_download = true;
             }
+
+            // if ($role == 3 && $self->project_id == $user->project_id) {
+            //     $can_download = true;
+            // }
         }
 
         $user_arr['can_download'] = $can_download;
