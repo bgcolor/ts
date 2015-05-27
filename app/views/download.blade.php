@@ -30,7 +30,7 @@
     <!-- content start -->
     <div class="admin-content">
       <div class="am-cf am-padding">
-        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg"><?php if (true == $manage_files) {echo '上传下载管理';} else if (true == $project_files) { echo '项目文件一览';} else { echo '我的下载';}  ?></strong> / <small>Download</small></div>
+        <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg"><?php if (Input::has('type') && Input::get('type') ) { echo '我的下载'; } else if (true == $manage_files) {echo '上传下载管理';} else if (true == $project_files) { echo '项目文件一览';}   ?></strong> / <small>Download</small></div>
       </div>
       
       <form action="" class="am-form am-form-inline am-margin-horizontal am-margin-vertical">

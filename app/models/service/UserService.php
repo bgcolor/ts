@@ -245,11 +245,29 @@ class UserService extends Service {
             $downloads = FileModel::whereRaw("user_id in $user_str")->skip(0)->take(Util::$previewCount)->orderBy('created_at', 'desc')->get();
         } else {
             $tutor = User::find($user->tutor_id);
-            if(!$tutor) {
-                return array();
+            $students = User::whereRaw('tutor_id = ?',array($id))->get();
+            $file_owners = array();
+            if ($tutor) {
+                $file_owners[] = $tutor->id;
             }
 
-            $downloads = FileModel::where('user_id','=',$tutor->id)->skip(0)->take(Util::$previewCount)->orderBy('created_at', 'desc')->get();
+            if($students) {
+                foreach ($students as $student) {
+                    $st_sts = User::whereRaw('tutor_id = ?',array($student->id))->get();
+                    if ($st_sts) {
+                        foreach ($st_sts as $st_st) {
+                            $file_owners[] = $st_st->id;
+                        }
+                    }
+                    $file_owners[] = $student->id;
+                }
+            }
+
+            if ($file_owners) {
+                $downloads = FileModel::whereRaw('user_id in ('.implode(',', $file_owners).')')->skip(0)->take(Util::$previewCount)->orderBy('created_at', 'desc')->get();
+            } else {
+                $downloads = array();
+            }
         }
 
         if ($downloads) {
@@ -501,42 +519,50 @@ class UserService extends Service {
 
             $downloads = FileModel::whereRaw("user_id in $user_str")->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
         } else {
+
             $tutor = User::find($user->tutor_id);
-            if(!$tutor) {
-                return array();
+            $students = User::whereRaw('tutor_id = ?',array($id))->get();
+            $file_owners = array();
+            if ($tutor) {
+                $file_owners[] = $tutor->id;
             }
 
-            $students = User::whereRaw('tutor_id = ?',array($user->id))->get();
-            
-            if (!$students) {
-                $downloads = FileModel::where('user_id','=',$tutor->id)->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            if($students) {
+                foreach ($students as $student) {
+                    $st_sts = User::whereRaw('tutor_id = ?',array($student->id))->get();
+                    if ($st_sts) {
+                        foreach ($st_sts as $st_st) {
+                            $file_owners[] = $st_st->id;
+                        }
+                    }
+                    $file_owners[] = $student->id;
+                }
             }
 
-            $ids = array();
-            if ($tutor) $ids[] = $tutor->id;
-            foreach ($students as $student) {
-                $ids[] = $student->id;
-            }
+            if ($file_owners) {
+                $downloads = FileModel::whereRaw('user_id in ('.implode(',', $file_owners).')')->orderBy('created_at', 'desc')->paginate(Util::$pagination);
+            } else {
+                $downloads = array();
+            }   
 
-            $downloads = FileModel::whereRaw('user_id in ('.implode(',', $ids).')')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
-
-            
         }
 
-        foreach ($downloads as $d) {
-            $records = Download::whereRaw('file_id = ?',array($d->id))->get();
-            $downloaders = array();
-            foreach($records as $record) {
-                $user = User::find($record->downloader_id);
-                // array_push($d->downloaders, $user->name);
-                $downloaders[] = $user->name;
-            }
+        if ($downloads) {
+            foreach ($downloads as $d) {
+                $records = Download::whereRaw('file_id = ?',array($d->id))->get();
+                $downloaders = array();
+                foreach($records as $record) {
+                    $user = User::find($record->downloader_id);
+                    // array_push($d->downloaders, $user->name);
+                    $downloaders[] = $user->name;
+                }
 
-            $user = User::find($d->user_id);
-            
-            $d->user = $user;
-            $d->downloaders = $downloaders;
-            $d->my_record = Download::whereRaw('downloader_id = ? and file_id = ?',array($id, $d->id))->select('updated_at')->first();
+                $user = User::find($d->user_id);
+                
+                $d->user = $user;
+                $d->downloaders = $downloaders;
+                $d->my_record = Download::whereRaw('downloader_id = ? and file_id = ?',array($id, $d->id))->select('updated_at')->first();
+            }
         }
         
         return $downloads;
@@ -565,42 +591,52 @@ class UserService extends Service {
 
             $downloads = FileModel::whereRaw("user_id in $user_str")->where('filename', 'like', '%'.$q.'%')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
         } else {
+    
             $tutor = User::find($user->tutor_id);
-            if(!$tutor) {
-                return array();
+            $students = User::whereRaw('tutor_id = ?',array($id))->get();
+            $file_owners = array();
+            if ($tutor) {
+                $file_owners[] = $tutor->id;
             }
 
-            $students = User::whereRaw('tutor_id = ?',array($user->id))->get();
-            
-            if (!$students) {
-                $downloads = FileModel::where('user_id','=',$tutor->id)->where('filename', 'like', '%'.$q.'%')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
+            if($students) {
+                foreach ($students as $student) {
+                    $st_sts = User::whereRaw('tutor_id = ?',array($student->id))->get();
+                    if ($st_sts) {
+                        foreach ($st_sts as $st_st) {
+                            $file_owners[] = $st_st->id;
+                        }
+                    }
+                    $file_owners[] = $student->id;
+                }
             }
 
-            $ids = array();
-            if ($tutor) $ids[] = $tutor->id;
-            foreach ($students as $student) {
-                $ids[] = $student->id;
-            }
+            if ($file_owners) {
+                $downloads = FileModel::whereRaw('user_id in ('.implode(',', $file_owners).') and filename like "%'.$q.'%"')->orderBy('created_at', 'desc')->paginate(Util::$pagination);
+            } else {
+                $downloads = array();
+            } 
 
-            $downloads = FileModel::whereRaw('user_id in ('.implode(',', $ids).') and filename like "%'.$q.'%"')->orderBy('updated_at', 'desc')->paginate(Util::$pagination);
         }
 
-        foreach ($downloads as $d) {
-            $records = Download::whereRaw('file_id = ?',array($d->id))->get();
-            $downloaders = array();
-            foreach($records as $record) {
-                $user = User::find($record->downloader_id);
-                // array_push($d->downloaders, $user->name);
-                $downloaders[] = $user->name;
-            }
+        if ($downloads) {
+            foreach ($downloads as $d) {
+                $records = Download::whereRaw('file_id = ?',array($d->id))->get();
+                $downloaders = array();
+                foreach($records as $record) {
+                    $user = User::find($record->downloader_id);
+                    // array_push($d->downloaders, $user->name);
+                    $downloaders[] = $user->name;
+                }
 
-            $user = User::find($d->user_id);
-            
-            $d->user = $user;
-            $d->downloaders = $downloaders;
-            $d->my_record = Download::whereRaw('downloader_id = ? and file_id = ?',array($id, $d->id))->select('updated_at')->first();
+                $user = User::find($d->user_id);
+                
+                $d->user = $user;
+                $d->downloaders = $downloaders;
+                $d->my_record = Download::whereRaw('downloader_id = ? and file_id = ?',array($id, $d->id))->select('updated_at')->first();
+            } 
         }
-        
+
         return $downloads;
     }
 

@@ -60,7 +60,7 @@
         </tbody>
       </table>
       <div class="am-cf">
-        共 {{ $downloads->getTotal() }} 个文件
+        共 {{ $downloads ? $downloads->getTotal() : 0 }} 个文件
         <div class="am-fr">
           <ul class="am-pagination">
             <?php echo with(new AmPresenter($paginator))->render(); ?>

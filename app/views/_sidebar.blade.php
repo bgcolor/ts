@@ -33,7 +33,7 @@
       <li><a href="{{ URL::to('userlist') }}?type=4"><span class="am-icon-book"></span> 用户一览</a></li>
       <?php } ?>
       <?php if ($my_download === true) { ?>
-      <li><a href="{{ URL::to('download') }}"><span class="am-icon-download"></span> 我的下载</a></li>
+      <li><a href="{{ URL::to('download') }}?type=1"><span class="am-icon-download"></span> 我的下载</a></li>
       <?php } ?>
       <?php if ($my_upload === true) { ?>
       <li><a href="{{ URL::to('upload') }}"><span class="am-icon-upload"></span> 我的上传</a></li>

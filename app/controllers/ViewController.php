@@ -60,12 +60,12 @@ class ViewController extends BaseController {
         }
 
         
-        if (!isset($downloads)) {
+        if (!$downloads) {
             $paginator = Paginator::make(array(), 0, Util::$pagination);
-        } 
-        
-        $downloads_arr = $downloads->toArray();
-        $paginator = Paginator::make($downloads_arr, $downloads->getTotal(), Util::$pagination);
+        } else {
+            $downloads_arr = $downloads->toArray();
+            $paginator = Paginator::make($downloads_arr, $downloads->getTotal(), Util::$pagination);
+        }
 
         if (Input::has('q')) {
             $paginator->appends(array('q' => Input::get('q')));
