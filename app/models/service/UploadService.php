@@ -86,7 +86,7 @@ class UploadService extends Service {
             $pathname = $file->pathname;
             $file->delete();
             Download::where('file_id','=',$params['id'])->delete();
-            unlink($pathname);
+            unlink(iconv('utf-8',Util::$localCharset,$pathname));
         });
 
         return true;
