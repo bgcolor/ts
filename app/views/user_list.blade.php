@@ -161,7 +161,7 @@
                 }
               ?>
               <?php 
-                if (true == $change_others_pass) { 
+                if (true == $delete_users) { 
               ?>
               <a href="javascript:;" data-id="{{ $user->id }}" class="am-fr delete-user">删除用户</a>
               <?php 

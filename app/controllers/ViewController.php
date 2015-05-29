@@ -405,6 +405,7 @@ class ViewController extends BaseController {
             'create_project',
             'change_pass',
             'change_others_pass',
+            'delete_users',
             'manage_files',
             'project_users',
             'all_users',
