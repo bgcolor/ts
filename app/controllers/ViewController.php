@@ -409,6 +409,8 @@ class ViewController extends BaseController {
             'manage_files',
             'project_users',
             'all_users',
+            'edit_projects',
+            'edit_users',
             'project_files'
         ));
 
@@ -461,5 +463,90 @@ class ViewController extends BaseController {
 
         $view_variable = array_merge($page_variable, $auth_variable);
         return View::make('evaluate',$view_variable);
+    }
+
+    public function editProject() {
+        
+        if (!AuthService::find('edit_projects')) {
+            return Util::response_error_msg('0001');
+        }
+
+        if (!Input::has('id')) {
+            return Util::response_error_msg('0002');
+        }
+
+        $project = Project::find(Input::get('id'));
+        if (!$project) {
+            return Util::response_error_msg('0002');
+        }
+
+        $page_variable = array(
+            'project_title' => ConstantStringService::get('project_title'),
+            'public_msg' => ConstantStringService::get('public_msg'),
+            'project_fail' => StatusInfoService::get_description('3005'),
+            'username' => Session::get('username'),
+            'project' => $project,
+            'msg_project_delete' => ConstantStringService::get('msg_project_delete'),
+            'system_title' => ConstantStringService::get('system_title'),
+            'system_sub_title' => ConstantStringService::get('system_sub_title'),
+            'powered_by' => ConstantStringService::get('powered_by')
+        );
+
+        $auth_variable = AuthService::compose_variable(array(
+            'my_profile',
+            'my_tutor',
+            'my_student',
+            'my_download',
+            'my_upload',
+            'my_progress',
+            'create_user',
+            'create_project',
+            'change_pass',
+            'project_users',
+            'all_users',
+            'project_files',
+            'manage_files'
+        ));
+
+        $view_variable = array_merge($page_variable, $auth_variable);
+        return View::make('edit_project',$view_variable);
+    }
+
+    public function editUser() {
+        $user_id = Input::get('id');
+        $user = UserService::get_user_array($user_id);
+
+        $page_variable = array(
+            'user_title' => ConstantStringService::get('user_title'),
+            'username' => Session::get('username'),
+            'user_id' => $user_id,
+            'user' => $user,
+            'user_fail' => StatusInfoService::get_description('1020'),
+            'public_msg' => ConstantStringService::get('public_msg'),
+            'system_title' => ConstantStringService::get('system_title'),
+            'system_sub_title' => ConstantStringService::get('system_sub_title'),
+            'powered_by' => ConstantStringService::get('powered_by')
+        );
+
+        $auth_variable = AuthService::compose_variable(array(
+            'my_profile',
+            'my_tutor',
+            'my_student',
+            'my_download',
+            'my_upload',
+            'my_progress',
+            'create_user',
+            'create_project',
+            'change_pass',
+            'manage_files',
+            'project_files',
+            'downloads_download',
+            'downloads_delete',
+            'project_users',
+            'all_users'
+        ));
+
+        $view_variable = array_merge($page_variable, $auth_variable);
+        return View::make('edit_user',$view_variable);
     }
 }

@@ -122,13 +122,14 @@ class UserService extends Service {
 
             $tutor = User::find($params['tutor_id']);
 
+            if (!$tutor) {
+                throw new Exception('1002');
+            }
+
             if ($params['project_id'] != $tutor->project_id) {
                 throw new Exception('1015');
             }
 
-            if (!$tutor) {
-                throw new Exception('1002');
-            }
 
             $params['tutor_name'] = $tutor->name;
         }
@@ -137,15 +138,13 @@ class UserService extends Service {
             if (isset($params['tutor_id'])) {
                 $tutor = User::find($params['tutor_id']);
 
-                if ($params['project_id'] != $tutor->project_id) {
-                    throw new Exception('1015');
+                if ($tutor) {
+                    if ($params['project_id'] != $tutor->project_id) {
+                        throw new Exception('1015');
+                    }
+                    $params['tutor_name'] = $tutor->name;
                 }
-
-                if (!$tutor) {
-                    throw new Exception('1002');
-                }
-
-                $params['tutor_name'] = $tutor->name;
+          
             }
         }
 
@@ -449,15 +448,27 @@ class UserService extends Service {
             throw new Exception('1000');
         }
 
-        foreach ( $params as $key => $value ) {
+        
+
+        DB::transaction(function() use ($params,$user)
+        {
+            if (isset($params['name'])) {
+                Download::where('downloader_id','=',$params['id'])->update(array("downloader_name" => $params['name']));
+                Download::where('owner_id','=',$params['id'])->update(array("owner_name" => $params['name']));
+            }
+
+            foreach ( $params as $key => $value ) {
             if ($key == 'password') {
                 throw new Exception('0002');
             }
+                $user[$key] = $value;
+            }
+            
+            $user->save();
+            
+        });
 
-            $user[$key] = $value;
-        }
-
-        return $user->save() ? true : false;
+        return true;
     }
 
     public static function get_uploads($id) {
@@ -676,7 +687,7 @@ class UserService extends Service {
 
         if(isset($files)) {
             foreach ($files as $f) {
-                unlink($f->pathname);
+                unlink(iconv('utf-8',Util::$localCharset,$f->pathname));
             }
         }
 

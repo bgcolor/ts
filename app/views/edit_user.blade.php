@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="assets/css/admin.css">
   </head>
   <body>
-  <div id="data" data-user-fail="{{ $user_fail }}" data-chose-tutor="{{ $chose_tutor }}"></div>
+  <div id="data" data-user-fail="{{ $user_fail }}"></div>
     <!--[if lte IE 9]>
     <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
@@ -38,63 +38,42 @@
         <div class="am-u-sm-12 am-u-md-8 am-u-end">
           <form class="am-form am-form-horizontal" id="user-form">
             
+            <input type="hidden" name="id" value="{{ $user['id'] }}">
             <div class="am-form-group">
               <label for="user-name" class="am-u-sm-2 am-form-label">用户名</label>
               <div class="am-u-sm-9 am-u-end">
-                <input type="text" id="user-name" placeholder="用户名 / Username" name="username" class="am-form-field">
+                <input type="text" id="user-name" placeholder="用户名 / Username" name="username" class="am-form-field" value="{{ $user['username'] }}" disabled>
               </div>
             </div>
 
             <div class="am-form-group">
               <label for="user-name" class="am-u-sm-2 am-form-label">姓名</label>
               <div class="am-u-sm-9 am-u-end">
-                <input type="text" id="user-name" placeholder="姓名 / Name" name="name" class="am-form-field">
+                <input type="text" id="user-name" placeholder="姓名 / Name" name="name" class="am-form-field" value="{{ $user['name'] }}">
               </div>
             </div>
 
             <div class="am-form-group">
               <label for="user-email" class="am-u-sm-2 am-form-label">项目</label>
               <div class="am-u-sm-9 am-u-end">
-                <select data-am-selected="{searchBox: 1,maxHeight: 250}" name="project_id">
                   <?php 
-                  if (isset($projects) && count($projects)) {
-                    foreach ($projects as $k => $p) {
+                  if (isset($user['project'])) {
                   ?>
-                  <option value="{{ $p->id }}" <?php echo $k == 0 ? 'selected' : ''; ?>>{{ $p->name }}</option>
+                  <input type="text" value="{{ $user['project']->name }}" disabled>
                   <?php
-                    }
+                  } else {
+                  ?>
+                  <input type="text" value="无" disabled>
+                  <?php  
                   }
                   ?>
-                  
-                </select> 
               </div>
             </div>
 
             <div class="am-form-group">
               <label for="user-email" class="am-u-sm-2 am-form-label">身份</label>
               <div class="am-u-sm-9 am-u-end">
-                <select data-am-selected="{searchBox: 1,maxHeight: 250}" name="role">
-                  <option value="1">学徒</option>
-                  <option value="2">评估师</option>
-                  <option value="3" selected>内审员</option>
-                  <option value="4">外审员</option>
-                  <option value="5">系统管理员</option>
-                </select>     
-              </div>
-            </div>
-            
-            <div class="am-form-group" id="tutor-group" style="display: none">
-              <label for="user-email" class="am-u-sm-2 am-form-label">导师</label>
-              <div class="am-u-sm-9 am-u-end">
-                <select data-am-selected="{searchBox: 1,maxHeight: 250}" name="tutor_id">
-                <?php 
-                if (isset($tutors) && count($tutors)) {
-                ?>
-                <option value="0" selected>无</option>
-                <?php
-                  foreach ($tutors as $k => $t) {
-                ?>
-                <option value="{{ $t->id }}">{{ $t->name }} -> <?php 
+                <input type="text" value="<?php 
                   $roleArr = array(
                     '学徒',
                     '评估师',
@@ -103,31 +82,43 @@
                     '系统管理员'
                   );
                   $role = Session::get('role'); 
-                  echo $roleArr[$t->role - 1];
-          ?></option>
-                <?php
+                  echo $roleArr[$user['role'] - 1];
+          ?>" disabled>                    
+              </div>
+            </div>
+            
+            <div class="am-form-group" id="tutor-group" style="display: none">
+              <label for="user-email" class="am-u-sm-2 am-form-label">导师</label>
+              <div class="am-u-sm-9 am-u-end">
+                  <?php 
+                  if (isset($user['tutor'])) {
+                  ?>
+                  <input type="text" value="{{ $user['tutor']->name }}" disabled>
+                  <?php
+                  } else {
+                  ?>
+                  <input type="text" value="无" disabled>
+                  <?php  
                   }
-                }
-                ?>
-                </select>     
+                  ?> 
               </div>
             </div>
               
             <div class="am-form-group">
               <label for="user-email" class="am-u-sm-2 am-form-label">电子邮件</label>
               <div class="am-u-sm-9 am-u-end">
-                <input type="email" id="user-email" placeholder="输入你的电子邮件 / Email" name="email" class="am-form-field">
+                <input type="email" id="user-email" placeholder="输入你的电子邮件 / Email" name="email" class="am-form-field" value="{{ $user['email'] or '' }}">
               </div>
             </div>
             <div class="am-form-group">
               <label for="user-phone" class="am-u-sm-2 am-form-label">电话</label>
               <div class="am-u-sm-9 am-u-end">
-                <input type="text" id="user-phone" placeholder="输入你的电话号码 / Telephone" name="phone_no" class="am-form-field">
+                <input type="text" id="user-phone" placeholder="输入你的电话号码 / Telephone" name="phone_no" class="am-form-field" value="{{ $user['phone_no'] or '' }}">
               </div>
             </div>
             <div class="am-form-group">
               <div class="am-u-sm-9 am-u-sm-push-2">
-                <button class="am-btn am-btn-primary" id="profile-btn">添加</button>
+                <button class="am-btn am-btn-primary" id="profile-btn">修改</button>
               </div>
             </div>
           </form>
@@ -158,13 +149,15 @@
     <!--<![endif]-->
     <script>
     (function(){
-      var createSuccess = false;
-      $(document).on("click", "#modal-alert .am-modal-btn", function() {
 
+      var mdfSuccess = false;
+
+      $(document).on("click", "#modal-alert .am-modal-btn", function() {
+        if (mdfSuccess === true) {
           location.reload();
+        }
 
       });
-
 
       $("#user-form").validate({
        // errorElement: '<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button></div>',
@@ -210,36 +203,14 @@
        },
        submitHandler: function(form) {
            var formData = {
-            username: $("[name=username]").val(),
+            id: $("[name=id]").val(),
             name: $("[name=name]").val(),
             email: $("[name=email]").val(),
             phone_no: $("[name=phone_no]").val(),
-            role: $("[name=role]").val()
            };
 
-           if (5 != $("[name=role]").val()) {
-            formData.project_id = $("[name=project_id]").val();
-           }
-
-           if (1 == $("[name=role]").val()) {
-            if (0 == $("[name=tutor_id]").val()) {
-              $.modalAlert({
-                 type: 'info',
-                 message: $("#data").attr("data-chose-tutor")
-               });
-              return false;
-            }
-            formData.tutor_id = $("[name=tutor_id]").val();
-           }
-
-           if (2 == $("[name=role]").val()) {
-            if ($("[name=tutor_id]").val()) {
-              formData.tutor_id = $("[name=tutor_id]").val();
-            }
-           }
-
            $.ajax({
-            url: window.baseUrl + 'user/create',
+            url: window.baseUrl + 'user/update',
             type: 'post',
             data: formData,
             success: function(data) {
@@ -249,8 +220,9 @@
                });
 
                if (data.status == 'success') {
-                createSuccess = true;
+                mdfSuccess = true;
                }
+
                $(form)[0].reset();
              },
              fail: function() {
@@ -263,13 +235,13 @@
          }
       });
 
-      $("[name=role]").on("change",function(){
-        if (1 == $(this).val() || 2 == $(this).val()) {
-          $("#tutor-group").show();
-        } else {
-          $("#tutor-group").hide();
-        }
-      });
+      // $("[name=role]").on("change",function(){
+      //   if (1 == $(this).val() || 2 == $(this).val()) {
+      //     $("#tutor-group").show();
+      //   } else {
+      //     $("#tutor-group").hide();
+      //   }
+      // });
 
     })();
     

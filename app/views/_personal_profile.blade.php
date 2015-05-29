@@ -107,7 +107,9 @@
           <a href="javascript:;" class="user-link-x user-link" data-id="{{ $user['tutor']->id }}">{{ $user['tutor']->name }}</a>
       <?php 
         } else {
-          echo $no_tutor;
+      ?>
+      <p class="user-link-x">{{ $no_tutors }}</p>
+      <?php
         }
       ?>
           

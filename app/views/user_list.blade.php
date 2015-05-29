@@ -79,8 +79,16 @@
             
             <?php 
             if (isset($user->project)) {
+              if (true !== $edit_projects) {
             ?>
-            <div class="gallery-desc"><strong>项目： </strong>{{ $user->project->name }}</div>
+            <div class="gallery-desc" data-id="{{ $user->project->id }}"><strong>项目： </strong>{{ $user->project->name }}</div>
+            <?php 
+              } else {
+            ?>
+            <div class="gallery-desc"><strong>项目： </strong><a href="javascript:;" class="edit-project" data-id="{{ $user->project->id }}">{{ $user->project->name }}</a></div>
+            <?php 
+              }
+            ?> 
             <?php 
             } else {
             ?>
@@ -161,6 +169,13 @@
                 }
               ?>
               <?php 
+                if (true == $edit_users) { 
+              ?>
+              <a href="javascript:;" data-id="{{ $user->id }}" class="edit-user">编辑用户信息</a>
+              <?php 
+                }
+              ?>
+              <?php 
                 if (true == $delete_users) { 
               ?>
               <a href="javascript:;" data-id="{{ $user->id }}" class="am-fr delete-user">删除用户</a>
@@ -216,6 +231,16 @@
         } else {
           location.href = window.baseUrl + 'userlist?type={{ $type }}';
         }
+      });
+
+      $(".edit-user").on("click",function(){
+        var id = $(this).attr("data-id");
+        location.href = window.baseUrl + 'edituser?id=' + id;
+      });
+
+      $(".edit-project").on("click",function(){
+        var id = $(this).attr("data-id");
+        location.href = window.baseUrl + 'editproject?id=' + id;
       });
 
       $(".reset-pass").on("click", function(){

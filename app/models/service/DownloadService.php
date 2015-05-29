@@ -63,7 +63,7 @@ class DownloadService extends Service {
         // $_SERVER["HTTP_USER_AGENT"]在IE中显示为：
         // Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko
             // echo $file->pathname;
-        if (file_exists(iconv('utf-8','gb18030',$file->pathname))) {
+        if (file_exists(iconv('utf-8',Util::$localCharset,$file->pathname))) {
             
         
             $filename = $file->filename;

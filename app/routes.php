@@ -22,9 +22,13 @@ Route::group(array('before' => 'signed'), function () {
     Route::get('user', 'ViewController@someone');
     Route::get('userlist', 'ViewController@userList');
     Route::get('evaluate', 'ViewController@evaluate');
+    Route::get('editproject', 'ViewController@editProject');
+    Route::get('edituser', 'ViewController@editUser');
 
     Route::post('evaluate/create', 'EvaluationController@create');
     Route::post('project/create', 'ProjectController@create');
+    Route::post('project/delete', 'ProjectController@delete');
+    Route::post('project/update', 'ProjectController@update');
     Route::get('logout', 'UserController@logout');
     Route::post('user/create', 'UserController@create');
     Route::post('user/update', 'UserController@update');

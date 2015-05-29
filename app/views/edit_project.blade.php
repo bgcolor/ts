@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="assets/css/admin.css">
   </head>
   <body>
-  <div id="data" data-project-fail="{{ $project_fail }}"></div>
+  <div id="data" data-project-fail="{{ $project_fail }}" data-msg-project-delete="{{ $msg_project_delete }}"></div>
     <!--[if lte IE 9]>
     <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
@@ -38,16 +38,18 @@
       <div class="am-g">
         <div class="am-u-sm-12 am-u-md-6">
           <form class="am-form am-form-horizontal" id="project-form">
+            <input type="hidden" value="{{ $project->id }}" name="id">
             <div class="am-form-group">
-                <input class="am-form-field" type="text" name="name" placeholder="请输入项目名称">
+                <input class="am-form-field" type="text" name="name" placeholder="请输入项目名称" value="{{ $project->name }}">
             </div>
 
             <div class="am-form-group">
-                <textarea class="am-form-field" name="description" placeholder="请输入项目描述"></textarea>
+                <textarea class="am-form-field" name="description" placeholder="请输入项目描述">{{ $project->description }}</textarea>
             </div>
 
             <div class="am-form-group">
-                <button class="am-btn am-btn-primary" id="change-pass-btn">添加</button>
+                <button class="am-btn am-btn-primary" id="change-pass-btn">更改</button>
+                <button type="button" class="am-btn am-btn-primary" id="delete" data-id="{{ $project->id }}">删除</button>
             </div>
           </form>
         </div>
@@ -75,14 +77,22 @@
     <!--<![endif]-->
     <script>
     (function(){
-      var createSuccess = false;
+
+      var mdfSuccess = false;
+      var deleteSuccess = false;
+
       $(document).on("click", "#modal-alert .am-modal-btn", function() {
 
-        if (createSuccess === true) {
+        if (mdfSuccess === true) {
           location.reload();
         }
 
+        if (deleteSuccess === true) {
+          location.href = window.baseUrl;
+        }
+
       });
+
       $("#project-form").validate({
         // errorElement: '<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button></div>',
         errorElement: 'p',
@@ -122,7 +132,7 @@
             // maybe disabling submit button
             // then:
             $(form).ajaxSubmit({
-              url: window.baseUrl + 'project/create',
+              url: window.baseUrl + 'project/update',
               type: 'post',
               success: function(data) {
                 $.modalAlert({
@@ -131,8 +141,11 @@
                 });
 
                 if (data.status == 'success') {
-                  $(form)[0].reset();createSuccess = true;
+                  mdfSuccess = true;
+                  $(form)[0].reset();
                 }
+
+                
               },
               fail: function() {
                 $.modalAlert({
@@ -142,6 +155,32 @@
               }
             });
           }
+      });
+
+      $("#delete").on("click", function(){
+        var id = $(this).attr("data-id");
+        $.modalConfirm({
+          confirm: function() {
+            // log('confirm');
+            
+            $.ajax({
+              url: window.baseUrl + 'project/delete',
+              type: 'post',
+              data: {
+                id: id
+              },
+              success: function(data) {
+                $.modalAlert({
+                  type: data.status == 'success' ? 'info' : 'warning',
+                  message: data.message,
+                });
+
+                deleteSuccess = true;
+              }
+            });
+          },
+          message: $("#data").attr("data-msg-project-delete")
+        });
       });
 
     })();
