@@ -162,19 +162,22 @@
             ?>
             <div class="gallery-desc">
               <?php 
-                if (true == $change_others_pass) { 
-              ?>
-              <a href="javascript:;" data-id="{{ $user->id }}" class="reset-pass">重置密码</a>
-              <?php 
-                }
-              ?>
-              <?php 
                 if (true == $edit_users) { 
               ?>
               <a href="javascript:;" data-id="{{ $user->id }}" class="edit-user">编辑用户信息</a>
               <?php 
                 }
               ?>
+            </div>
+            <div class="gallery-desc">
+              <?php 
+                if (true == $change_others_pass) { 
+              ?>
+              <a href="javascript:;" data-id="{{ $user->id }}" class="reset-pass">重置密码</a>
+              <?php 
+                }
+              ?>
+              
               <?php 
                 if (true == $delete_users) { 
               ?>
